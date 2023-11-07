@@ -41,6 +41,12 @@
           "data": {
             "pathName": "cone_2_b"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_balance"
+          }
         }
       ]
     }

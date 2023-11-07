@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+// #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 #include "RobotContainer.h"
 
@@ -62,16 +62,7 @@ RobotContainer::RobotContainer()
    * Where auto has already been declared in RobotContainer.h
   */
 
-  // m_chooser.AddOption("Test1", new FollowPPPathCMD(&m_drive, "Straight Line"));
-  // m_chooser.AddOption("L Path", new FollowPPPathCMD(&m_drive, "BackForth"));
-  // m_chooser.AddOption("T Drive With Time", new TestAutoDWT(&m_drive));
-  // m_chooser.AddOption("CommOut", new DriveWithTime(&m_drive, -2_mps, 0_mps, 0_rad_per_s, 1.25_s, false));
-  // m_chooser.AddOption("CubeNBalance", new CubeAndBalance(&m_drive, &m_arm, &m_claw));
-  // m_chooser.AddOption("ConeNBalance", new ConeAndBalance(&m_drive, &m_arm, &m_claw));
-  // m_chooser.AddOption("PathPlanner Test", new FollowPPPathCMD(&m_drive, "BackForth", false));
-  // m_chooser.AddOption("RedPathTest", new FollowPPPathCMD(&m_drive, "Red", true));
-  // m_chooser.AddOption("RedRotateBalance", new FollowPPPathCMD(&m_drive, "RotateBalance", true));
-  // // m_chooser.AddOption("Test", new TestCMD(&m_drive));
+  m_chooser.AddOption("Test Auto", "test_auto");
 
   // Arm Commands
   NamedCommands::registerCommand("arm_mid_cone", std::make_shared<ArmTo>(&m_arm, ArmSubsystem::State::kMidCone));
@@ -81,6 +72,9 @@ RobotContainer::RobotContainer()
   // Claw Commands
   NamedCommands::registerCommand("claw_open", std::make_shared<ClawFor>(&m_claw, ClawFor::Direction::kBackwards, 0.7_s));
   NamedCommands::registerCommand("claw_close", std::make_shared<ClawFor>(&m_claw, ClawFor::Direction::kForwards, 0.7_s));
+
+  // Other Commands
+  NamedCommands::registerCommand("drive_balance", std::make_shared<Balance>(&m_drive));
 
 
   // frc::SmartDashboard::PutData("Auto Chooser", &m_chooser);
@@ -150,6 +144,8 @@ void RobotContainer::ConfigureDriverButtons() {
   //   [this] {m_drive.ToggleVision();}
   // );
 
+  frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kA).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
+
 }
 
 void RobotContainer::ConfigureOperatorButtons() {
@@ -177,5 +173,5 @@ void RobotContainer::ConfigureOperatorButtons() {
 
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  return PathPlannerAuto("path").ToPtr();
+  return PathPlannerAuto(m_chooser.GetSelected()).ToPtr();
 }

@@ -73,7 +73,8 @@ class RobotContainer {
   VisionSubsystem& m_vision = VisionSubsystem::GetInstance();
 
   // The chooser for the autonomous routines
-  // frc::SendableChooser<frc2::Command*> m_chooser;
+  
+  frc::SendableChooser<std::string> m_chooser;
 
   // Extra Triggers
   frc2::Trigger m_targetTrigger{[this]() -> bool {return m_drive.GetTarget() == DriveSubsystem::Target::kCone;}};
