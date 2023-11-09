@@ -28,9 +28,10 @@
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
 
+typedef std::optional<std::pair<units::second_t, frc::Pose2d>> PosePacket_t;
+
 class VisionSubsystem : public frc2::SubsystemBase {
  public:
-  VisionSubsystem();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -43,23 +44,20 @@ class VisionSubsystem : public frc2::SubsystemBase {
 
   photonlib::PhotonPipelineResult GetRightFrame();
 
-  std::pair<std::optional<units::second_t>, std::optional<frc::Pose2d>> GetPose();
+  PosePacket_t GetPose();
 
   void InitSendable(wpi::SendableBuilder& builder) override;
 
  private:
+
+  VisionSubsystem();
+
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
-  frc::Pose2d m_FilterPose(frc::Pose2d, bool);
-
   frc::AprilTagFieldLayout m_layout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp);
-
 
   photonlib::PhotonPoseEstimator m_rightEst;
   photonlib::PhotonPoseEstimator m_leftEst;
-
-  frc::LinearFilter<units::meter_t> m_xFilter;
-  frc::LinearFilter<units::meter_t> m_yFilter;
 
 };

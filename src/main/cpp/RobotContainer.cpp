@@ -13,6 +13,7 @@
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/POVButton.h>
 #include <frc2/command/ConditionalCommand.h>
+#include <frc2/command/PrintCommand.h>
 
 #include <frc/controller/PIDController.h>
 #include <frc/geometry/Translation2d.h>
@@ -63,11 +64,13 @@ RobotContainer::RobotContainer()
   */
 
   m_chooser.AddOption("Test Auto", "test_auto");
+  m_chooser.AddOption("Straight Line", "just_move");
 
   // Arm Commands
   NamedCommands::registerCommand("arm_mid_cone", std::make_shared<ArmTo>(&m_arm, ArmSubsystem::State::kMidCone));
   NamedCommands::registerCommand("arm_mid_cube", std::make_shared<ArmTo>(&m_arm, ArmSubsystem::State::kMidCubeConePickup));
   NamedCommands::registerCommand("arm_stow", std::make_shared<ArmTo>(&m_arm, ArmSubsystem::State::kStow));
+  NamedCommands::registerCommand("arm_car", std::make_shared<ArmTo>(&m_arm, ArmSubsystem::State::kMsMaiCar));
 
   // Claw Commands
   NamedCommands::registerCommand("claw_open", std::make_shared<ClawFor>(&m_claw, ClawFor::Direction::kBackwards, 0.7_s));
@@ -76,14 +79,15 @@ RobotContainer::RobotContainer()
   // Other Commands
   NamedCommands::registerCommand("drive_balance", std::make_shared<Balance>(&m_drive));
 
-
-  // frc::SmartDashboard::PutData("Auto Chooser", &m_chooser);
+  NamedCommands::registerCommand("print_checkpoint", std::make_shared<frc2::PrintCommand>("Checkpoint"));
 
   frc::SmartDashboard::PutData("Arm", &m_arm);
   frc::SmartDashboard::PutData("Claw", &m_claw);
   frc::SmartDashboard::PutData("Swerve", &m_drive);
   frc::SmartDashboard::PutData("Vision", &m_vision);
   frc::SmartDashboard::PutData("PDP", &m_pdp);
+
+  frc::SmartDashboard::PutData("Chooser", &m_chooser);
 
   // Configure the button bindings
   ConfigureButtonBindings();
@@ -146,6 +150,7 @@ void RobotContainer::ConfigureDriverButtons() {
 
   frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kA).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
 
+  frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kY).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMidCone).ToPtr());
 }
 
 void RobotContainer::ConfigureOperatorButtons() {
@@ -173,5 +178,5 @@ void RobotContainer::ConfigureOperatorButtons() {
 
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  return PathPlannerAuto(m_chooser.GetSelected()).ToPtr();
+  return PathPlannerAuto("just_path").ToPtr();
 }

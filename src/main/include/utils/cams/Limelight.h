@@ -16,6 +16,8 @@
 
 #include <units/time.h>
 
+typedef std::optional<std::pair<units::second_t, frc::Pose2d>> PosePacket_t;
+
 namespace hb {
   
   /**
@@ -123,7 +125,7 @@ namespace hb {
        * 
        * @warning you will need to handle nullopt
        */
-      static std::pair<std::optional<frc::Pose2d>, std::optional<units::second_t>> GetPose();
+      static PosePacket_t GetPose();
 
   };
 } // namespace hb

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 14.463526429590928,
-      "y": 4.51677370359817
+      "x": 14.496079753580828,
+      "y": 4.646986999557757
     },
-    "rotation": -178.15238973400542
+    "rotation": -177.61405596961112
   },
   "command": {
     "type": "sequential",
@@ -14,17 +14,23 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "curve_red"
+            "pathName": "straight_red"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "down_red"
           }
         }
       ]
     }
   },
-  "folder": "red_autos"
+  "folder": null
 }

@@ -148,7 +148,7 @@ using radians_per_second_squared_t =
     units::compound_unit<units::radians,
                          units::inverse<units::squared<units::second>>>;
 
-inline const auto kMaxSpeed = units::meters_per_second_t(1.5);
+inline const auto kMaxSpeed = units::meters_per_second_t(3);
 inline const auto kMaxAcceleration = units::meters_per_second_squared_t(1.5);
 inline const auto kMaxAngularSpeed = units::radians_per_second_t(3.142);
 inline const auto kMaxAngularAcceleration = units::unit_t<radians_per_second_squared_t>(3.142);
@@ -157,8 +157,8 @@ inline const double kPXController = 0.5;
 inline const double kPYController = 0.5;
 inline const double kPThetaController = 0.5;
 
-inline const pathplanner::PIDConstants kPIDTrans{1, 0, 0};
-inline const pathplanner::PIDConstants kPIDRot{1, 0, 0};
+inline const pathplanner::PIDConstants kPIDTrans{2, 0, 0};
+inline const pathplanner::PIDConstants kPIDRot{4, 0, 0};
 
 inline const pathplanner::HolonomicPathFollowerConfig kConfig{
     kPIDTrans, 

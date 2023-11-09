@@ -12,6 +12,7 @@ ArmTo::ArmTo(ArmSubsystem* arm, ArmSubsystem::State state) : m_arm(arm), m_state
 // Called when the command is initially scheduled.
 void ArmTo::Initialize() {
   m_arm->SetTarget(m_state);
+  printf("ArmTo Init\n");
 }
 
 // Called repeatedly when this Command is scheduled to run

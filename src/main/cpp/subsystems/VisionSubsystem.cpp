@@ -16,9 +16,7 @@
 
 VisionSubsystem::VisionSubsystem() : 
 m_rightEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Right")), VisionConstants::RightTransform),
-m_leftEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Left")), VisionConstants::LeftTransform),
-m_xFilter(frc::LinearFilter<units::meter_t>::SinglePoleIIR(0.1, 0.02_s)),
-m_yFilter(frc::LinearFilter<units::meter_t>::SinglePoleIIR(0.1, 0.02_s))
+m_leftEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Left")), VisionConstants::LeftTransform)
 {
     m_leftEst.SetMultiTagFallbackStrategy(photonlib::PoseStrategy::LOWEST_AMBIGUITY);
     m_rightEst.SetMultiTagFallbackStrategy(photonlib::PoseStrategy::LOWEST_AMBIGUITY);
@@ -32,7 +30,6 @@ VisionSubsystem& VisionSubsystem::GetInstance() {
     return inst;
 }
 
-
 photonlib::PhotonPipelineResult VisionSubsystem::GetLeftFrame() {
     return m_leftEst.GetCamera()->GetLatestResult();
 }
@@ -41,55 +38,59 @@ photonlib::PhotonPipelineResult VisionSubsystem::GetRightFrame() {
     return m_rightEst.GetCamera()->GetLatestResult();
 }
 
-std::pair<std::optional<units::second_t>, std::optional<frc::Pose2d>> VisionSubsystem::GetPose() {
+PosePacket_t VisionSubsystem::GetPose() {
     std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
     std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
-    std::pair<std::optional<frc::Pose2d>, std::optional<units::second_t>> estll = hb::LimeLight::GetPose();
+    PosePacket_t estll = hb::LimeLight::GetPose();
 
-    if (estll.first.has_value()) {
-        return std::make_pair(estll.second, estll.first);
+    // Limelight is most accurate, take values here first
+    if (estll.has_value()) {
+        return estll;
     } 
 
-    bool filter = true;
-
+    
+    // Check to see if photoncameras do not have a value
     if (!estl.has_value() && !estr.has_value()) {
-        return std::make_pair(std::nullopt, std::nullopt);
-    } else if (estl.has_value() && !estr.has_value()) {
+
+        return std::nullopt;
+
+    }
+
+    // Check to see if one camera has an estimate
+    if (estl.has_value() && !estr.has_value()) {
+
         frc::Pose2d pose = estl.value().estimatedPose.ToPose2d();
         units::second_t timestamp = estl.value().timestamp;
+
         return std::make_pair(timestamp, pose);
+
     } else if (estr.has_value() && !estl.has_value()) {
+
         frc::Pose2d pose = estr.value().estimatedPose.ToPose2d();
         units::second_t timestamp = estr.value().timestamp;
-        return std::make_pair(timestamp, m_FilterPose(pose, filter));
+
+        return std::make_pair(timestamp, pose);
+
     } 
+
+    // Check to see which cam sees the most targets
     if (estl.value().targetsUsed.size() > estr.value().targetsUsed.size()) {
         frc::Pose2d pose = estl.value().estimatedPose.ToPose2d();
         units::second_t timestamp = estl.value().timestamp;
-        return std::make_pair(timestamp, m_FilterPose(pose, filter));
+        return std::make_pair(timestamp, pose);
     } else if (estr.value().targetsUsed.size() > estl.value().targetsUsed.size()) {
         frc::Pose2d pose = estr.value().estimatedPose.ToPose2d();
         units::second_t timestamp = estr.value().timestamp;
-        return std::make_pair(timestamp, m_FilterPose(pose, filter));
+        return std::make_pair(timestamp, pose);
     } else {
         frc::Pose2d pose = estl.value().estimatedPose.ToPose2d();
         units::second_t timestamp = estl.value().timestamp;
-        return std::make_pair(timestamp, m_FilterPose(pose, filter));
+        return std::make_pair(timestamp, pose);
     }
 }
 
 
 void VisionSubsystem::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Vision");
-
-}
-
-frc::Pose2d VisionSubsystem::m_FilterPose(frc::Pose2d pose, bool enabled) {
-    units::meter_t x = m_xFilter.Calculate(pose.X());
-    units::meter_t y = m_yFilter.Calculate(pose.Y());
-    if (enabled)
-    return frc::Pose2d(x, y, pose.Rotation());
-    else 
-    return pose;
 
 }
