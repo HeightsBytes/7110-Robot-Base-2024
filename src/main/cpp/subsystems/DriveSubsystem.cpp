@@ -29,8 +29,8 @@ using namespace pathplanner;
 DriveSubsystem::DriveSubsystem()
     : 
       m_frontLeft{
-      kFrontLeftDriveMotorPort,           kFrontLeftTurningMotorPort,
-      kFrontLeftTurningEncoderPorts,      kFrontLeftOffset},
+          kFrontLeftDriveMotorPort,       kFrontLeftTurningMotorPort,
+          kFrontLeftTurningEncoderPorts,  kFrontLeftOffset},
 
       m_rearLeft{
           kRearLeftDriveMotorPort,        kRearLeftTurningMotorPort,

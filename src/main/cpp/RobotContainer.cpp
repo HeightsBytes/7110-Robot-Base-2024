@@ -122,35 +122,10 @@ void RobotContainer::ConfigureButtonBindings() {
 
 void RobotContainer::ConfigureDriverButtons() {
 
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kY).WhenPressed(
-  //   [this] {m_drive.GetTarget() == DriveSubsystem::Target::kCone ? m_arm.MidCone() : m_arm.MidCubeConePickup();});
-  
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kA).WhenPressed([this] {m_arm.Stow();});
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kB).WhenPressed(
-  //   [this] {m_drive.GetTarget() == DriveSubsystem::Target::kCone ? m_arm.MidCubeConePickup() : m_arm.CubePickup();});
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kX).WhenPressed(
-  //   [this] {m_drive.SetTarget(m_drive.GetTarget() == DriveSubsystem::Target::kCone ? DriveSubsystem::Target::kCube : DriveSubsystem::Target::kCone);});
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kLeftBumper).WhenPressed([this] {m_claw.Run(0.5);})
-  //   .WhenReleased([this] {m_claw.Run(0);});
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kRightBumper).WhenPressed([this] {m_claw.Run(-0.5);})
-  //   .WhenReleased([this] {m_claw.Run(0);});
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kLeftStick).WhenPressed([this] {m_arm.MsMaiCar();});
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kLeftStick).WhenPressed(
-  //   ConeScore(&m_drive, X_OUT));
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kRightStick).WhenPressed(
-  //   [this] {m_drive.ToggleVision();}
-  // );
-
   frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kA).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
 
   frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kY).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMidCone).ToPtr());
+
 }
 
 void RobotContainer::ConfigureOperatorButtons() {

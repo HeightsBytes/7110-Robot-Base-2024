@@ -157,8 +157,8 @@ inline const double kPXController = 0.5;
 inline const double kPYController = 0.5;
 inline const double kPThetaController = 0.5;
 
-inline const pathplanner::PIDConstants kPIDTrans{2, 0, 0};
-inline const pathplanner::PIDConstants kPIDRot{4, 0, 0};
+inline const pathplanner::PIDConstants kPIDTrans{1.5, 0, 0.07};
+inline const pathplanner::PIDConstants kPIDRot{2, 0, 0.1};
 
 inline const pathplanner::HolonomicPathFollowerConfig kConfig{
     kPIDTrans, 
