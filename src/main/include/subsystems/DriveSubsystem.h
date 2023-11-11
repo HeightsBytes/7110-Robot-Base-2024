@@ -102,6 +102,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
   */
   wpi::array<frc::SwerveModuleState, 4> GetModuleStates();
 
+  /**
+   * @returns array of the modules displacements and directions in the order [fl, fr, rl, rr]
+  */  
   wpi::array<frc::SwerveModulePosition, 4> GetModulePositions();
 
   /**
@@ -109,12 +112,6 @@ class DriveSubsystem : public frc2::SubsystemBase {
    */
   void ZeroHeading();
 
-  /**
-   * Returns the turn rate of the robot.
-   *
-   * @return The turn rate of the robot, in degrees per second
-   */
-  double GetTurnRate();
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -126,19 +123,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
   // Sets the pose of the robot's estimator
   void SetPose(frc::Pose2d pose);
 
-
   void SetTarget(Target target);
 
   Target GetTarget();
-
-  frc::HolonomicDriveController GetController() {
-    return frc::HolonomicDriveController{
-      frc::PIDController{AutoConstants::kPXController+0.5, 0, 0},
-      frc::PIDController{AutoConstants::kPYController+0.5, 0, 0},
-      frc::ProfiledPIDController<units::radian>{
-        1, 0, 0, AutoConstants::kThetaControllerConstraints
-      }};
-  }
 
   void InitSendable(wpi::SendableBuilder& builder) override;
 

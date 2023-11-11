@@ -42,7 +42,7 @@ photonlib::PhotonPipelineResult VisionSubsystem::GetRightFrame() {
 
 std::vector<PosePacket_t> VisionSubsystem::GetPose() {
 
-    std::vector<PosePacket_t> packet;
+    std::vector<PosePacket_t> packets;
 
     std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
     std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
@@ -50,18 +50,18 @@ std::vector<PosePacket_t> VisionSubsystem::GetPose() {
 
     // Limelight is most accurate, take values here first
     if (estll.has_value()) {
-        packet.emplace_back(estll);
+        packets.emplace_back(estll);
     } 
 
     if (estl.has_value()) {
-        packet.emplace_back(PhotonToPosePacket(estl));
+        packets.emplace_back(PhotonToPosePacket(estl));
     }
 
     if (estr.has_value()) {
-        packet.emplace_back(PhotonToPosePacket(estr));
+        packets.emplace_back(PhotonToPosePacket(estr));
     }
 
-    return packet;
+    return packets;
 }
 
 

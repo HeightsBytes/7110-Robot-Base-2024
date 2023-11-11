@@ -164,18 +164,12 @@ void DriveSubsystem::ZeroHeading() {
   gyro.Reset();
 }
 
-double DriveSubsystem::GetTurnRate() {
-  return -gyro.GetRate();
-}
-
 frc::Pose2d DriveSubsystem::GetPose() {
   return m_poseEstimator.GetEstimatedPosition();
 }
 
 void DriveSubsystem::SetPose(frc::Pose2d pose) {
-  m_poseEstimator.ResetPosition(gyro.GetRot2d(), {m_frontLeft.GetPosition(),
-                    m_rearLeft.GetPosition(), m_frontRight.GetPosition(),
-                    m_rearRight.GetPosition()}, pose);
+  m_poseEstimator.ResetPosition(gyro.GetRot2d(), GetModulePositions(), pose);
 }
 
 
@@ -203,24 +197,10 @@ void DriveSubsystem::InitSendable(wpi::SendableBuilder& builder) {
 
   builder.AddBooleanProperty("Vision", LAMBDA(m_vision), [this](bool set) -> void {m_vision = set;});
 
-  builder.AddDoubleProperty("Relative X", LAMBDA(GetVelocity().vx.value()), nullptr);
-  builder.AddDoubleProperty("Relative y", LAMBDA(GetVelocity().vy.value()), nullptr);
-  builder.AddDoubleProperty("Relative omega", LAMBDA(GetVelocity().omega.value()), nullptr);
-  builder.AddDoubleProperty("Relative Velocity", LAMBDA(hyp(GetVelocity().vx.value(), GetVelocity().vy.value())), nullptr);
+  builder.AddDoubleProperty("X Velocity", LAMBDA(GetVelocity().vx.value()), nullptr);
+  builder.AddDoubleProperty("Y Velocity", LAMBDA(GetVelocity().vy.value()), nullptr);
+  builder.AddDoubleProperty("Rotation Velocity", LAMBDA(GetVelocity().omega.value()), nullptr);
+  builder.AddDoubleProperty("Mag Velocity", LAMBDA(hyp(GetVelocity().vx.value(), GetVelocity().vy.value())), nullptr);
 
-  // builder.AddDoubleProperty("Heading", LAMBDA(gyro.GetCompassHeading()), nullptr);
-  // builder.AddDoubleProperty("Rot2d", LAMBDA(gyro.GetRot2d().Degrees().value()), nullptr);
-
-  // builder.AddDoubleProperty("FL V", LAMBDA(m_frontLeft.GetState().speed.value()), nullptr);
-  // builder.AddDoubleProperty("FL A", LAMBDA(m_frontLeft.GetState().angle.Radians().value()), nullptr);
-
-  // builder.AddDoubleProperty("FR V", LAMBDA(m_frontRight.GetState().speed.value()), nullptr);
-  // builder.AddDoubleProperty("FR A", LAMBDA(m_frontRight.GetState().angle.Radians().value()), nullptr);  
-
-  // builder.AddDoubleProperty("RL V", LAMBDA(m_rearLeft.GetState().speed.value()), nullptr);
-  // builder.AddDoubleProperty("RL A", LAMBDA(m_rearLeft.GetState().angle.Radians().value()), nullptr);
-
-  // builder.AddDoubleProperty("RR V", LAMBDA(m_rearRight.GetState().speed.value()), nullptr);
-  // builder.AddDoubleProperty("RR A", LAMBDA(m_rearRight.GetState().angle.Radians().value()), nullptr);
 
 }
