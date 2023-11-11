@@ -17,6 +17,7 @@
 #include <wpi/sendable/SendableBuilder.h>
 
 #include <cmath>
+#include <ranges>
 
 #include "utils/cams/Limelight.h"
 #include "Constants.h"
@@ -68,7 +69,7 @@ void DriveSubsystem::Periodic() {
 
   if (m_vision) {
     std::vector<PosePacket_t> CamPose = m_visionSystem.GetPose();
-    for (PosePacket_t i : CamPose) {
+    for (PosePacket_t i : CamPose | std::views::filter([](PosePacket_t packet) {return packet.has_value();})) {
       m_poseEstimator.AddVisionMeasurement(i.value().second, i.value().first);
     }
   }
