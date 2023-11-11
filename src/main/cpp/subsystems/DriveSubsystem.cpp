@@ -43,10 +43,6 @@ DriveSubsystem::DriveSubsystem()
       m_rearRight{
           kRearRightDriveMotorPort,       kRearRightTurningMotorPort,
           kRearRightTurningEncoderPorts,  kRearRightOffset},
-
-      m_odometry(kDriveKinematics, gyro.GetRot2d(), {m_frontLeft.GetPosition(),
-                    m_rearLeft.GetPosition(), m_frontRight.GetPosition(),
-                    m_rearRight.GetPosition()}, frc::Pose2d()),
       m_visionSystem(VisionSubsystem::GetInstance()), 
       m_poseEstimator(kDriveKinematics, gyro.GetRot2d(), {m_frontLeft.GetPosition(),
                     m_rearLeft.GetPosition(), m_frontRight.GetPosition(),
@@ -67,27 +63,17 @@ DriveSubsystem::DriveSubsystem()
 
 void DriveSubsystem::Periodic() {
   // Implementation of subsystem periodic method goes here.
-  m_odometry.Update(gyro.GetRot2d(), {m_frontLeft.GetPosition(),
-                    m_rearLeft.GetPosition(), m_frontRight.GetPosition(),
-                    m_rearRight.GetPosition()});
-  m_poseEstimator.Update(gyro.GetRot2d(),{m_frontLeft.GetPosition(),
-                    m_rearLeft.GetPosition(), m_frontRight.GetPosition(),
-                    m_rearRight.GetPosition()});
+  m_poseEstimator.Update(gyro.GetRot2d(), GetModulePositions());
 
 
   if (m_vision) {
-    PosePacket_t CamPose = m_visionSystem.GetPose();
-    if (CamPose.has_value()) {
-      m_poseEstimator.AddVisionMeasurement(CamPose.value().second, CamPose.value().first);
+    std::vector<PosePacket_t> CamPose = m_visionSystem.GetPose();
+    for (PosePacket_t i : CamPose) {
+      m_poseEstimator.AddVisionMeasurement(i.value().second, i.value().first);
     }
   }
 
-
   m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
-
-  
-
-  // printf("speed: %5.2f\tangle: %5.2f\n", m_rearLeft.GetState().speed.value(), m_rearLeft.GetState().angle.Degrees().value());
 
 }
 
@@ -143,14 +129,7 @@ void DriveSubsystem::DriveRobotRelative(frc::ChassisSpeeds speeds, bool auton) {
 }
 
 frc::ChassisSpeeds DriveSubsystem::GetVelocity() {
-  return kDriveKinematics.ToChassisSpeeds(
-  {
-    m_frontLeft.GetState(),
-    m_frontRight.GetState(),
-    m_rearLeft.GetState(),
-    m_rearRight.GetState()
-  }
-  );
+  return kDriveKinematics.ToChassisSpeeds(GetModuleStates());
 }
 
 void DriveSubsystem::SetModuleStates(
@@ -161,6 +140,24 @@ void DriveSubsystem::SetModuleStates(
   m_frontRight.SetDesiredState(desiredStates[1]);
   m_rearLeft.SetDesiredState(desiredStates[2]);
   m_rearRight.SetDesiredState(desiredStates[3]);
+}
+
+wpi::array<frc::SwerveModuleState, 4> DriveSubsystem::GetModuleStates() {
+  return {
+    m_frontLeft.GetState(),
+    m_frontRight.GetState(),
+    m_rearLeft.GetState(),
+    m_rearRight.GetState()
+  };
+}
+
+wpi::array<frc::SwerveModulePosition, 4> DriveSubsystem::GetModulePositions() {
+  return {
+    m_frontLeft.GetPosition(),
+    m_frontRight.GetPosition(),
+    m_rearLeft.GetPosition(),
+    m_rearRight.GetPosition()
+  };
 }
 
 void DriveSubsystem::ZeroHeading() {
@@ -181,12 +178,6 @@ void DriveSubsystem::SetPose(frc::Pose2d pose) {
                     m_rearRight.GetPosition()}, pose);
 }
 
-void DriveSubsystem::ResetOdometry(frc::Pose2d pose) {
-  m_odometry.ResetPosition(frc::Rotation2d(units::degree_t(gyro.GetAngle())), 
-                    {m_frontLeft.GetPosition(), m_rearLeft.GetPosition(),
-                    m_frontRight.GetPosition(), m_rearRight.GetPosition()},
-                    pose);
-}
 
 void DriveSubsystem::ResetEncoders() {
   m_frontLeft.ZeroTurnEncoder();

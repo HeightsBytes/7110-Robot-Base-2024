@@ -97,6 +97,12 @@ class DriveSubsystem : public frc2::SubsystemBase {
    */
   void SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
 
+  /**
+   * @returns array of the modules speeds and directions in the order [fl, fr, rl, rr]
+  */
+  wpi::array<frc::SwerveModuleState, 4> GetModuleStates();
+
+  wpi::array<frc::SwerveModulePosition, 4> GetModulePositions();
 
   /**
    * Zeroes the heading of the robot.
@@ -117,15 +123,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
    */
   frc::Pose2d GetPose();
 
-  
+  // Sets the pose of the robot's estimator
   void SetPose(frc::Pose2d pose);
 
-  /**
-   * Resets the odometry to the specified pose.
-   *
-   * @param pose The pose to which to set the odometry.
-   */
-  void ResetOdometry(frc::Pose2d pose);
 
   void SetTarget(Target target);
 
@@ -182,9 +182,6 @@ class DriveSubsystem : public frc2::SubsystemBase {
   frc::ProfiledPIDController<units::radians> m_turnController{7.5, 0, 0,
    {DriveConstants::kMaxAngularSpeed, DriveConstants::kMaxAngularAcceleration}};
 
-  // Odometry class for tracking robot pose
-  // 4 defines the number of modules
-  frc::SwerveDriveOdometry<4> m_odometry;
 
   frc::Field2d m_field;
 

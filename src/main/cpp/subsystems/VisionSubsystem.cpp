@@ -14,6 +14,8 @@
 #include "Constants.h"
 #include "utils/cams/Limelight.h"
 
+
+
 VisionSubsystem::VisionSubsystem() : 
 m_rightEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Right")), VisionConstants::RightTransform),
 m_leftEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Left")), VisionConstants::LeftTransform)
@@ -38,59 +40,38 @@ photonlib::PhotonPipelineResult VisionSubsystem::GetRightFrame() {
     return m_rightEst.GetCamera()->GetLatestResult();
 }
 
-PosePacket_t VisionSubsystem::GetPose() {
+std::vector<PosePacket_t> VisionSubsystem::GetPose() {
+
+    std::vector<PosePacket_t> packet;
+
     std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
     std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
     PosePacket_t estll = hb::LimeLight::GetPose();
 
     // Limelight is most accurate, take values here first
     if (estll.has_value()) {
-        return estll;
+        packet.emplace_back(estll);
     } 
 
-    
-    // Check to see if photoncameras do not have a value
-    if (!estl.has_value() && !estr.has_value()) {
-
-        return std::nullopt;
-
+    if (estl.has_value()) {
+        packet.emplace_back(PhotonToPosePacket(estl));
     }
 
-    // Check to see if one camera has an estimate
-    if (estl.has_value() && !estr.has_value()) {
-
-        frc::Pose2d pose = estl.value().estimatedPose.ToPose2d();
-        units::second_t timestamp = estl.value().timestamp;
-
-        return std::make_pair(timestamp, pose);
-
-    } else if (estr.has_value() && !estl.has_value()) {
-
-        frc::Pose2d pose = estr.value().estimatedPose.ToPose2d();
-        units::second_t timestamp = estr.value().timestamp;
-
-        return std::make_pair(timestamp, pose);
-
-    } 
-
-    // Check to see which cam sees the most targets
-    if (estl.value().targetsUsed.size() > estr.value().targetsUsed.size()) {
-        frc::Pose2d pose = estl.value().estimatedPose.ToPose2d();
-        units::second_t timestamp = estl.value().timestamp;
-        return std::make_pair(timestamp, pose);
-    } else if (estr.value().targetsUsed.size() > estl.value().targetsUsed.size()) {
-        frc::Pose2d pose = estr.value().estimatedPose.ToPose2d();
-        units::second_t timestamp = estr.value().timestamp;
-        return std::make_pair(timestamp, pose);
-    } else {
-        frc::Pose2d pose = estl.value().estimatedPose.ToPose2d();
-        units::second_t timestamp = estl.value().timestamp;
-        return std::make_pair(timestamp, pose);
+    if (estr.has_value()) {
+        packet.emplace_back(PhotonToPosePacket(estr));
     }
+
+    return packet;
 }
 
 
 void VisionSubsystem::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Vision");
 
+}
+
+PosePacket_t VisionSubsystem::PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose) {
+    if (!pose.has_value()) return std::nullopt;
+
+    return std::make_pair(pose.value().timestamp, pose.value().estimatedPose.ToPose2d());
 }
