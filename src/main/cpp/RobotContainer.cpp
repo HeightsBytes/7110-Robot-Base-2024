@@ -44,6 +44,7 @@
 #include "commands/ArmTo.h"
 #include "commands/ClawFor.h"
 #include "commands/DefaultDriveCMD.h"
+#include "commands/DefaultDrive.h"
 
 #include "utils/cams/Limelight.h"
 #include "subsystems/DriveSubsystem.h"
@@ -95,15 +96,12 @@ RobotContainer::RobotContainer()
   // Configure the button bindings
   ConfigureButtonBindings();
 
-  // New version with macros to test
-  m_drive.SetDefaultCommand(DefaultDriveCMD(
-    &m_drive, 
-    X_OUT, 
-    Y_OUT, 
-    ROT_OUT,
-    LAMBDA(true),
-    LAMBDA(DriveConstants::kMaxSpeed.value() * (m_triggerLimit.Calculate(m_driverController.GetRightTriggerAxis()) * 0.625 + 0.375))
-  )); 
+  m_drive.SetDefaultCommand(
+    DefaultDrive(
+      &m_drive,
+      &m_driverController
+    )
+  );
 
 }
 
