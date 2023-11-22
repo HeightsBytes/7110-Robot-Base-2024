@@ -46,17 +46,15 @@
  */
 class RobotContainer {
  public:
+
   RobotContainer();
 
   frc2::CommandPtr GetAutonomousCommand();
 
  private:
-  // The driver's controller
-  frc::XboxController m_driverController{OIConstants::kDriverControllerPort};
 
-  // The operator's controller
-  #define OPERATORCONTROLLER
-  frc::XboxController m_operatorController{OIConstants::kOperatorControllerPort};
+  frc2::CommandXboxController m_driverController{OIConstants::kDriverControllerPort};
+  frc2::CommandXboxController m_operatorController{OIConstants::kOperatorControllerPort};
 
   // The robot's subsystems and commands are defined here...
 

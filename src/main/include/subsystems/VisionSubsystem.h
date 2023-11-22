@@ -59,8 +59,6 @@ class VisionSubsystem : public frc2::SubsystemBase {
 
   std::vector<PosePacket_t> GetPose();
 
-  void InitSendable(wpi::SendableBuilder& builder) override;
-
  private:
 
   VisionSubsystem();

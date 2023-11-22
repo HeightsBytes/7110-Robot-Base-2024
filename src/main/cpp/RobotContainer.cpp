@@ -22,6 +22,10 @@
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/Filesystem.h>
+#include <frc/DriverStation.h>
+
+#include <wpi/MemoryBuffer.h>
 
 #include <utility>
 #include <cmath>
@@ -78,16 +82,15 @@ RobotContainer::RobotContainer()
 
   // Other Commands
   NamedCommands::registerCommand("drive_balance", std::make_shared<Balance>(&m_drive));
+  NamedCommands::registerCommand("drive_switch", std::move(m_drive.SetGyro(180_deg)));
 
   NamedCommands::registerCommand("print_checkpoint", std::make_shared<frc2::PrintCommand>("Checkpoint"));
 
   frc::SmartDashboard::PutData("Arm", &m_arm);
   frc::SmartDashboard::PutData("Claw", &m_claw);
   frc::SmartDashboard::PutData("Swerve", &m_drive);
-  frc::SmartDashboard::PutData("Vision", &m_vision);
   frc::SmartDashboard::PutData("PDP", &m_pdp);
-
-  frc::SmartDashboard::PutData("Chooser", &m_chooser);
+  frc::SmartDashboard::PutData("Auto Chooser", &m_chooser);
 
   // Configure the button bindings
   ConfigureButtonBindings();
@@ -102,18 +105,9 @@ RobotContainer::RobotContainer()
     LAMBDA(DriveConstants::kMaxSpeed.value() * (m_triggerLimit.Calculate(m_driverController.GetRightTriggerAxis()) * 0.625 + 0.375))
   )); 
 
-  m_targetTrigger.OnTrue(frc2::InstantCommand([] {hb::LimeLight::SetPipeline(hb::LimeLight::Pipeline::kRetroReflective);}).ToPtr())
-    .OnFalse(frc2::InstantCommand([] {hb::LimeLight::SetPipeline(hb::LimeLight::Pipeline::kAprilTag);}).ToPtr());
-
-
 }
 
 void RobotContainer::ConfigureButtonBindings() {
-  /**
-   *  When binding buttons use this as the template
-   *  frc::JoystickButton(&m_controller, frc::XboxController::Button::kButton).WhenPressed(Command);
-   *  TODO: test command xbox controller implementation(found below) and see if it works
-  */
 
   ConfigureDriverButtons();
   ConfigureOperatorButtons();
@@ -122,36 +116,40 @@ void RobotContainer::ConfigureButtonBindings() {
 
 void RobotContainer::ConfigureDriverButtons() {
 
-  frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kA).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
+  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kA).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
 
-  frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kY).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMidCone).ToPtr());
+  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kY).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMidCone).ToPtr());
+
+  m_driverController.A().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMsMaiCar).ToPtr());
+
+  m_driverController.Y().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
+
+  m_driverController.B().OnTrue(m_drive.SetGyro(180_deg));
 
 }
 
 void RobotContainer::ConfigureOperatorButtons() {
-  #ifdef OPERATORCONTROLLER
 
-    // Emergency Shutoff
-    // frc2::JoystickButton(&m_operatorController, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([this] {m_arm.Homing(false);}));
-
-    // frc2::JoystickButton(&m_operatorController, frc::XboxController::Button::kA).WhenPressed(frc2::InstantCommand([this] {m_arm.Homing(true);}));
-
-    // frc2::JoystickButton(&m_operatorController, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([this] {m_claw.Enable(false);}));
-
-    // frc2::JoystickButton(&m_operatorController, frc::XboxController::Button::kY).WhenPressed(frc2::InstantCommand([this] {m_claw.Enable(true);}));
-
-    // frc2::JoystickButton(&m_operatorController, frc::XboxController::Button::kRightBumper).WhenPressed(frc2::InstantCommand([this] {m_claw.Run(-0.5);})).WhenReleased(
-    //   frc2::InstantCommand([this] {m_claw.Run(0.0);}));
-
-    // frc2::JoystickButton(&m_operatorController, frc::XboxController::Button::kLeftBumper).WhenPressed(frc2::InstantCommand([this] {m_claw.Run(0.5);})).WhenReleased(
-    //   frc2::InstantCommand([this] {m_claw.Run(0.0);}));
-
-    // frc2::JoystickButton(&m_operatorController, frc::XboxController::Button::kStart).WhenPressed(frc2::InstantCommand([this] {m_drive.ResetEncoders();}));
-
-  #endif
 }
 
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  return PathPlannerAuto("just_path").ToPtr();
+
+  std::string autoName = "red_auto";
+
+	const std::string filePath = frc::filesystem::GetDeployDirectory()
+			+ "/pathplanner/autos/" + autoName + ".auto";
+
+	std::error_code error_code;
+	std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
+			wpi::MemoryBuffer::GetFile(filePath, error_code);
+
+	if (fileBuffer == nullptr || error_code) {
+		throw std::runtime_error("Cannot open file: " + filePath);
+	}
+
+	wpi::json json = wpi::json::parse(fileBuffer->GetCharBuffer());
+
+	return AutoBuilder::getAutoCommandFromJson(json);
+
 }

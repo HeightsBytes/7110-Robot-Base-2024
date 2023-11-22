@@ -44,31 +44,25 @@ std::vector<PosePacket_t> VisionSubsystem::GetPose() {
 
     std::vector<PosePacket_t> packets;
 
-    std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
-    std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
-    PosePacket_t estll = hb::LimeLight::GetPose();
 
-    // Limelight is most accurate, take values here first
-    if (estll.has_value()) {
-        packets.emplace_back(estll);
-    } 
+    try {
+        PosePacket_t estll = hb::LimeLight::GetPose();
+        if (estll.has_value()) packets.emplace_back(estll);
+    } catch (...) {}
 
-    if (estl.has_value()) {
-        packets.emplace_back(PhotonToPosePacket(estl));
-    }
-
-    if (estr.has_value()) {
-        packets.emplace_back(PhotonToPosePacket(estr));
-    }
+    try {
+        PosePacket_t estl = PhotonToPosePacket(m_leftEst.Update());
+        if (estl.has_value()) packets.emplace_back(estl);
+    } catch (...) {}
+    
+    try {
+        PosePacket_t estr = PhotonToPosePacket(m_rightEst.Update());
+        if (estr.has_value()) packets.emplace_back(estr);
+    } catch (...) {}
 
     return packets;
 }
 
-
-void VisionSubsystem::InitSendable(wpi::SendableBuilder& builder) {
-    builder.SetSmartDashboardType("Vision");
-
-}
 
 PosePacket_t VisionSubsystem::PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose) {
     if (!pose.has_value()) return std::nullopt;

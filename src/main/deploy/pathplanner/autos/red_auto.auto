@@ -2,31 +2,50 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 14.496079753580828,
-      "y": 4.646986999557757
+      "x": 14.764644676497474,
+      "y": 5.0050735634466195
     },
-    "rotation": -177.61405596961112
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
+            "name": "drive_switch_2"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "straight_red"
+            "name": "arm_car"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "down_red"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "arm_stow"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "balance_red"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_balance"
           }
         }
       ]

@@ -45,7 +45,7 @@ DriveSubsystem::DriveSubsystem()
           kRearRightDriveMotorPort,       kRearRightTurningMotorPort,
           kRearRightTurningEncoderPorts,  kRearRightOffset},
       m_visionSystem(VisionSubsystem::GetInstance()), 
-      m_poseEstimator(kDriveKinematics, gyro.GetRot2d(), {m_frontLeft.GetPosition(),
+      m_poseEstimator(kDriveKinematics, GetHeading(), {m_frontLeft.GetPosition(),
                     m_rearLeft.GetPosition(), m_frontRight.GetPosition(),
                     m_rearRight.GetPosition()}, frc::Pose2d()),
                     m_vision(true), 
@@ -64,7 +64,7 @@ DriveSubsystem::DriveSubsystem()
 
 void DriveSubsystem::Periodic() {
   // Implementation of subsystem periodic method goes here.
-  m_poseEstimator.Update(gyro.GetRot2d(), GetModulePositions());
+  m_poseEstimator.Update(GetHeading(), GetModulePositions());
 
 
   if (m_vision) {
@@ -85,7 +85,7 @@ void DriveSubsystem::Drive(units::meters_per_second_t xSpeed,
   
   auto states = kDriveKinematics.ToSwerveModuleStates(
       fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                          xSpeed, ySpeed, rot, gyro.GetRot2d())
+                          xSpeed, ySpeed, rot, GetHeading())
                     : frc::ChassisSpeeds{xSpeed, ySpeed, rot});
 
   kDriveKinematics.DesaturateWheelSpeeds(&states, DriveConstants::kMaxSpeed);
@@ -101,7 +101,7 @@ void DriveSubsystem::Drive(units::meters_per_second_t xSpeed,
 
 void DriveSubsystem::DriveFieldRelative(frc::ChassisSpeeds speeds) {
   auto states = kDriveKinematics.ToSwerveModuleStates(
-    frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, gyro.GetRot2d()));
+    frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetHeading()));
 
   kDriveKinematics.DesaturateWheelSpeeds(&states, AutoConstants::kMaxSpeed);
 
@@ -170,7 +170,7 @@ frc::Pose2d DriveSubsystem::GetPose() {
 }
 
 void DriveSubsystem::SetPose(frc::Pose2d pose) {
-  m_poseEstimator.ResetPosition(gyro.GetRot2d(), GetModulePositions(), pose);
+  m_poseEstimator.ResetPosition(GetHeading(), GetModulePositions(), pose);
 }
 
 

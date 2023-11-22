@@ -80,9 +80,11 @@ class DriveSubsystem : public frc2::SubsystemBase {
              units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
              bool fieldRelative);
 
-  void DriveFieldRelative(frc::ChassisSpeeds);
+  void DriveFieldRelative(frc::ChassisSpeeds speeds);
 
-  void DriveRobotRelative(frc::ChassisSpeeds, bool auton);
+  void DriveRobotRelative(frc::ChassisSpeeds speeds, bool auton);
+
+  // frc2::CommandPtr DriveTo(frc::Pose2d position, units::meter_t rotDelayDist);
 
   frc::ChassisSpeeds GetVelocity();
 
@@ -111,6 +113,14 @@ class DriveSubsystem : public frc2::SubsystemBase {
    * Zeroes the heading of the robot.
    */
   void ZeroHeading();
+
+  frc::Rotation2d GetHeading() {
+    return gyro.GetRot2d().Degrees() + m_offset;
+  }
+
+  void SetOffset(units::degree_t offset) {
+    m_offset = offset;
+  }
 
 
   /**
@@ -156,6 +166,12 @@ class DriveSubsystem : public frc2::SubsystemBase {
 
   hb::PigeonGyro gyro{DriveConstants::CanIds::kPidgeonID};
 
+  inline frc2::CommandPtr SetGyro(units::degree_t angle) {
+    return this->RunOnce(
+      [angle, this] {SetOffset(angle);}
+    );
+  }
+
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
@@ -165,6 +181,8 @@ class DriveSubsystem : public frc2::SubsystemBase {
   SwerveModule m_rearLeft;
   SwerveModule m_frontRight;
   SwerveModule m_rearRight;
+
+  units::degree_t m_offset = 0_deg;
 
   frc::ProfiledPIDController<units::radians> m_turnController{7.5, 0, 0,
    {DriveConstants::kMaxAngularSpeed, DriveConstants::kMaxAngularAcceleration}};

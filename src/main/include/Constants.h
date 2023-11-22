@@ -23,6 +23,7 @@
 
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
+#include <pathplanner/lib/path/PathConstraints.h>
 
 #include "subsystems/ArmSubsystem.h"
 
@@ -144,33 +145,34 @@ namespace ClawConstants {
 }
 
 namespace AutoConstants {
-using radians_per_second_squared_t =
+    using radians_per_second_squared_t =
     units::compound_unit<units::radians,
                          units::inverse<units::squared<units::second>>>;
 
-inline const auto kMaxSpeed = units::meters_per_second_t(3);
-inline const auto kMaxAcceleration = units::meters_per_second_squared_t(1.5);
-inline const auto kMaxAngularSpeed = units::radians_per_second_t(3.142);
-inline const auto kMaxAngularAcceleration = units::unit_t<radians_per_second_squared_t>(3.142);
+    inline const auto kMaxSpeed = 3_mps;
+    inline const auto kMaxAcceleration = 3_mps_sq;
+    inline const auto kMaxAngularSpeed = units::radians_per_second_t(3.142);
+    inline const auto kMaxAngularAcceleration = units::unit_t<radians_per_second_squared_t>(3.142);
 
-inline const double kPXController = 0.5;
-inline const double kPYController = 0.5;
-inline const double kPThetaController = 0.5;
+    inline const double kPXController = 0.5;
+    inline const double kPYController = 0.5;
+    inline const double kPThetaController = 0.5;
 
-inline const pathplanner::PIDConstants kPIDTrans{1.5, 0, 0.07};
-inline const pathplanner::PIDConstants kPIDRot{2, 0, 0.1};
+    inline const pathplanner::PIDConstants kPIDTrans{1.25, 0, 0.07};
+    inline const pathplanner::PIDConstants kPIDRot{1, 0, 0.1};
 
-inline const pathplanner::HolonomicPathFollowerConfig kConfig{
-    kPIDTrans, 
-    kPIDRot, 
-    4.5_mps, 
-    0.53881_m, /**sqrt(2 * 15in ^ 2)**/
-    pathplanner::ReplanningConfig()
-};
+    inline const pathplanner::HolonomicPathFollowerConfig kConfig{
+        kPIDTrans, 
+        kPIDRot, 
+        4.5_mps, 
+        0.53881_m, /**sqrt(2 * 15in ^ 2)**/
+        pathplanner::ReplanningConfig()
+    };
 
+    inline const pathplanner::PathConstraints kConstraints{kMaxSpeed, kMaxAcceleration, kMaxAngularSpeed, kMaxAngularAcceleration};
 
-extern const frc::TrapezoidProfile<units::radians>::Constraints
-    kThetaControllerConstraints;
+    extern const frc::TrapezoidProfile<units::radians>::Constraints
+        kThetaControllerConstraints;
 
 }  // namespace AutoConstants
 
