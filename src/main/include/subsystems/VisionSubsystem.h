@@ -31,18 +31,18 @@
 
 typedef std::optional<std::pair<units::second_t, frc::Pose2d>> PosePacket_t;
 
-/**
- * 
- * To update the Orange Pi:
- * 1. Download the latest photonvision .jar file
- * 2. Go into bash (windows subsystem for linux required)
- * 3. sch [photonvision jar].jar orangepi@[module name]:~/
- * 4. ssh orangepi@[module name]
- * 5. sudo mv [photonvision jar].jar /opt/photonvision/photonvision.jar
- * 6. sudo systemctl restart photonvision.service
- * 7. sudo reboot now
- * 
-*/
+/******************************************************************************\
+ *                                                                            *
+ * To update the Orange Pi:                                                   *
+ * 1. Download the latest photonvision .jar file                              *
+ * 2. Go into bash (windows subsystem for linux required)                     *
+ * 3. sch [photonvision jar].jar orangepi@[module name]:~/                    *
+ * 4. ssh orangepi@[module name]                                              *
+ * 5. sudo mv [photonvision jar].jar /opt/photonvision/photonvision.jar       *
+ * 6. sudo systemctl restart photonvision.service                             *
+ * 7. sudo reboot now                                                         *
+ *                                                                            *
+\******************************************************************************/
 class VisionSubsystem : public frc2::SubsystemBase {
  public:
 
