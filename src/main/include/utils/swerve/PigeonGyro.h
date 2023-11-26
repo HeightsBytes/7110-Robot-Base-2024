@@ -58,19 +58,19 @@ namespace hb {
      * 
      * @return double 
      */
-    virtual double GetPitch();
+    virtual double GetPitch() const;
 
     /**
      * @brief Get the roll of the gyro
      * 
      * @return double 
      */
-    virtual double GetRoll();
+    virtual double GetRoll() const;
 
     /**
      * Working version of GetRotation2d
     */
-    virtual frc::Rotation2d GetRot2d();
+    virtual frc::Rotation2d GetRot2d() const;
 
     /**
      * @brief Get the rotation of the gyro in radians

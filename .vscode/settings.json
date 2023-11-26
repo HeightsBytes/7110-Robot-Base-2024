@@ -19,6 +19,7 @@
     "concepts": "cpp",
     "optional": "cpp",
     "any": "cpp",
-    "ranges": "cpp"
+    "ranges": "cpp",
+    "hash_map": "cpp"
   }
 }

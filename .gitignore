@@ -5,6 +5,10 @@
 # Prerequisites
 *.d
 
+# clangd
+*.cache
+compile_commands.json
+
 # Compiled Object files
 *.slo
 *.lo

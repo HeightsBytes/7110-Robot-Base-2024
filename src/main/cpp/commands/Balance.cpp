@@ -14,7 +14,7 @@ void Balance::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void Balance::Execute() {
-  double angle = m_drive->gyro.GetRoll();
+  double angle = m_drive->GetRoll();
   double calc = m_controller.Calculate(angle, 0.0);
   // printf("Gyro Calc: %5.2f\n", calc);
   if (fabs(angle) < 1.5) 

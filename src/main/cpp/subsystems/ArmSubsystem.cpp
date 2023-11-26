@@ -28,7 +28,7 @@ m_actuator(ArmConstants::kActuatorID),
 m_actuatorEncoder(ArmConstants::kActuatorEncoderID),
 m_actuatorController(ArmConstants::kPActuator, 0, 0),
 m_limitSwitch(0),
-m_target(ArmConstants::Positions::kStow), 
+m_target(GetPosition()), 
 m_actual(GetExtension(), GetAngle()),
 m_homing(true)
 {
@@ -243,17 +243,14 @@ std::string ArmSubsystem::StateToString(State state) {
             return "Ms Mai Car";
         break;
 
-        case State::kRunning: 
-            return "Running";
-        break;
-
         case State::kStow: 
             return "Stow";
         break;
 
-        // This is not technically possible however if you see this, there is a problem
-        default: 
-        return "HOW???????";
+        case State::kRunning: 
+        default:
+            return "Running";
         break;
+
     }
 }

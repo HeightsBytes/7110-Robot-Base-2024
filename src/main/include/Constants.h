@@ -6,6 +6,7 @@
  * @file Constants.h
  * @date 2023-08-19
  */
+#pragma once
 
 #include <frc/geometry/Translation2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
@@ -29,7 +30,6 @@
 
 #include <numbers>
 
-#pragma once
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -46,64 +46,73 @@
 */
 
 namespace DriveConstants {
-    namespace CanIds{
-    inline const int kFrontLeftDriveMotorPort = 1;
-    inline const int kRearLeftDriveMotorPort = 3;
-    inline const int kFrontRightDriveMotorPort = 6;
-    inline const int kRearRightDriveMotorPort = 8;
 
-    inline const int kFrontLeftTurningMotorPort = 5;
-    inline const int kRearLeftTurningMotorPort = 7;
-    inline const int kFrontRightTurningMotorPort = 2;
-    inline const int kRearRightTurningMotorPort = 4;
+    namespace CanIds {
 
-    inline const int kFrontLeftTurningEncoderPorts = 2;
-    inline const int kRearLeftTurningEncoderPorts = 1;
-    inline const int kFrontRightTurningEncoderPorts = 3;
-    inline const int kRearRightTurningEncoderPorts = 4;
+        inline constexpr int kFrontLeftDriveMotorPort = 1;
+        inline constexpr int kRearLeftDriveMotorPort = 3;
+        inline constexpr int kFrontRightDriveMotorPort = 6;
+        inline constexpr int kRearRightDriveMotorPort = 8;
 
-    inline const int kPidgeonID = 0;
+        inline constexpr int kFrontLeftTurningMotorPort = 5;
+        inline constexpr int kRearLeftTurningMotorPort = 7;
+        inline constexpr int kFrontRightTurningMotorPort = 2;
+        inline constexpr int kRearRightTurningMotorPort = 4;
+
+        inline constexpr int kFrontLeftTurningEncoderPorts = 2;
+        inline constexpr int kRearLeftTurningEncoderPorts = 1;
+        inline constexpr int kFrontRightTurningEncoderPorts = 3;
+        inline constexpr int kRearRightTurningEncoderPorts = 4;
+
+        inline constexpr int kPidgeonID = 0;
+        
     } // namespace CanIds
 
-inline const double kFrontLeftOffset = 41.31-180.0; //encoder 2
-inline const double kRearLeftOffset =  -42.71+180.0; //encoder 1
-inline const double kFrontRightOffset = 107.48-180.0; //encoder 3
-inline const double kRearRightOffset = -168.75+180.0; //encoder 4
+    inline constexpr double kFrontLeftOffset = 41.31-180.0; //encoder 2
+    inline constexpr double kRearLeftOffset =  -42.71+180.0; //encoder 1
+    inline constexpr double kFrontRightOffset = 107.48-180.0; //encoder 3
+    inline constexpr double kRearRightOffset = -168.75+180.0; //encoder 4
 
-inline const auto kMaxSpeed = 4.25_mps;
-inline const auto kMaxAngularSpeed = units::radians_per_second_t(1 * std::numbers::pi);
-inline const auto kMaxAngularAcceleration = units::radians_per_second_squared_t(2 * std::numbers::pi);
+    inline constexpr auto kMaxSpeed = 4.25_mps;
+    inline constexpr auto kMaxAngularSpeed = units::radians_per_second_t(1 * std::numbers::pi);
+    inline constexpr auto kMaxAngularAcceleration = units::radians_per_second_squared_t(2 * std::numbers::pi);
 
-inline const auto kTrackWidth = 0.31369_m;
-inline const auto kTrackLength = 0.31369_m;
+    inline constexpr auto kTrackWidth = 0.31369_m;
+    inline constexpr auto kTrackLength = 0.31369_m;
 
+  // Forward is +x and left is +y
+    inline frc::SwerveDriveKinematics<4> kDriveKinematics{
+        frc::Translation2d(kTrackLength, kTrackWidth),
+        frc::Translation2d(kTrackLength, -kTrackWidth),
+        frc::Translation2d(-kTrackLength, kTrackWidth),
+        frc::Translation2d(-kTrackLength, -kTrackWidth)};
 
 }  // namespace DriveConstants
 
 namespace ModuleConstants {
 
-inline const double kGearRatio = 1/6.75;
-inline const double kWheelDiameterMeters = 0.05092958;
-inline const double kDriveEncoderDistancePerPulse =
-    kGearRatio * 2 * std::numbers::pi * kWheelDiameterMeters;
-inline const double kDriveEncoderVelocityRatio = kDriveEncoderDistancePerPulse;
-inline const double kDriveEncoderPositionRatio = kDriveEncoderDistancePerPulse;
+    inline constexpr double kGearRatio = 1/6.75;
+    inline constexpr double kWheelDiameterMeters = 0.05092958;
+    inline constexpr double kDriveEncoderDistancePerPulse =
+        kGearRatio * 2 * std::numbers::pi * kWheelDiameterMeters;
+    inline constexpr double kDriveEncoderVelocityRatio = kDriveEncoderDistancePerPulse;
+    inline constexpr double kDriveEncoderPositionRatio = kDriveEncoderDistancePerPulse;
 
-inline const double kTurnRatio = 7.0/150.0;
-inline const double kTurnEncoderRatio = kTurnRatio * 2.0 * std::numbers::pi;
+    inline constexpr double kTurnRatio = 7.0/150.0;
+    inline constexpr double kTurnEncoderRatio = kTurnRatio * 2.0 * std::numbers::pi;
 
-inline const double kPModuleTurningController = 1;
-inline const double kPModuleDriveController = 0.75;
+    inline constexpr double kPModuleTurningController = 1;
+    inline constexpr double kPModuleDriveController = 0.75;
 
-inline const double kPDrive = 0.175;
-inline const double kIDrive = 0;
-inline const double kDDrive = 0.02;
-inline const double kFFDrive = 2.67;
+    inline constexpr double kPDrive = 0.175;
+    inline constexpr double kIDrive = 0;
+    inline constexpr double kDDrive = 0.02;
+    inline constexpr double kFFDrive = 2.67;
 
-inline const double kPTurn = 1.25;
-inline const double kITurn = 0;
-inline const double kDTurn = 0;
-inline const double kFFTurn = 0;
+    inline constexpr double kPTurn = 1.25;
+    inline constexpr double kITurn = 0;
+    inline constexpr double kDTurn = 0;
+    inline constexpr double kFFTurn = 0;
 }  // namespace ModuleConstants
 
 namespace VisionConstants {
@@ -112,23 +121,23 @@ namespace VisionConstants {
 }
 
 namespace ArmConstants {
-    inline const int kExtensionID = 9;
-    inline const int kActuatorID = 1;
-    inline const int kActuatorEncoderID = 0;
-    inline const double kPExtension = 0.03;
-    inline const double kPActuator = 1;
+    inline constexpr int kExtensionID = 9;
+    inline constexpr int kActuatorID = 1;
+    inline constexpr int kActuatorEncoderID = 0;
+    inline constexpr double kPExtension = 0.03;
+    inline constexpr double kPActuator = 1;
 
     // Arm extension is bound from [0, 160]
-    inline const uint8_t kMaxExtend = 160;
-    inline const uint8_t kMinExtend = 0;
+    inline constexpr uint8_t kMaxExtend = 160;
+    inline constexpr uint8_t kMinExtend = 0;
     // Arm angle is bound from [0, 100]
     // to keep from sticking, [2, 98] is prefered
-    inline const uint8_t kMaxAngle = 98;
-    inline const uint8_t kMinAngle = 2;
+    inline constexpr uint8_t kMaxAngle = 98;
+    inline constexpr uint8_t kMinAngle = 2;
     
     // Other important extensions
-    inline const uint8_t kCubeScoreConePickupExtension = 100;
-    inline const uint8_t kCubePickupExtension = 50;
+    inline constexpr uint8_t kCubeScoreConePickupExtension = 100;
+    inline constexpr uint8_t kCubePickupExtension = 50;
     
     namespace Positions {
         inline const ArmPosition kConeMid{kMaxExtend, kMinAngle};
@@ -140,43 +149,37 @@ namespace ArmConstants {
 }
 
 namespace ClawConstants {
-    inline const int kClawID = 0;
-    inline const int kClawPDPPole = 9;
+    inline constexpr int kClawID = 0;
+    inline constexpr int kClawPDPPole = 9;
 }
 
 namespace AutoConstants {
-    using radians_per_second_squared_t =
-    units::compound_unit<units::radians,
-                         units::inverse<units::squared<units::second>>>;
 
-    inline const auto kMaxSpeed = 3_mps;
-    inline const auto kMaxAcceleration = 3_mps_sq;
-    inline const auto kMaxAngularSpeed = units::radians_per_second_t(3.142);
-    inline const auto kMaxAngularAcceleration = units::unit_t<radians_per_second_squared_t>(3.142);
+    inline constexpr auto kMaxSpeed = 3_mps;
+    inline constexpr auto kMaxAcceleration = 3_mps_sq;
+    inline constexpr auto kMaxAngularSpeed = units::radians_per_second_t(std::numbers::pi);
+    inline constexpr auto kMaxAngularAcceleration = units::radians_per_second_squared_t(std::numbers::pi);
 
-    inline const double kPXController = 0.5;
-    inline const double kPYController = 0.5;
-    inline const double kPThetaController = 0.5;
+    inline constexpr pathplanner::PIDConstants kPIDTranslation{1.25, 0, 0.07};
+    inline constexpr pathplanner::PIDConstants kPIDRotation{1, 0, 0.1};
 
-    inline const pathplanner::PIDConstants kPIDTrans{1.25, 0, 0.07};
-    inline const pathplanner::PIDConstants kPIDRot{1, 0, 0.1};
-
-    inline const pathplanner::HolonomicPathFollowerConfig kConfig{
-        kPIDTrans, 
-        kPIDRot, 
-        4.5_mps, 
+    inline constexpr pathplanner::HolonomicPathFollowerConfig kConfig{
+        kPIDTranslation, 
+        kPIDRotation, 
+        kMaxSpeed, 
         0.53881_m, /**sqrt(2 * 15in ^ 2)**/
         pathplanner::ReplanningConfig()
     };
 
-    inline const pathplanner::PathConstraints kConstraints{kMaxSpeed, kMaxAcceleration, kMaxAngularSpeed, kMaxAngularAcceleration};
+    inline constexpr pathplanner::PathConstraints kConstraints{
+        kMaxSpeed, kMaxAcceleration, kMaxAngularSpeed, kMaxAngularAcceleration};
 
-    extern const frc::TrapezoidProfile<units::radians>::Constraints
-        kThetaControllerConstraints;
 
 }  // namespace AutoConstants
 
 namespace OIConstants {
-inline const int kDriverControllerPort = 0;
-inline const int kOperatorControllerPort = 1;
+
+    inline constexpr int kDriverControllerPort = 0;
+    inline constexpr int kOperatorControllerPort = 1;
+
 }  // namespace OIConstants

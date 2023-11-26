@@ -4,7 +4,7 @@
 
 #include "commands/ClawFor.h"
 
-ClawFor::ClawFor(ClawSubsystem* claw, Direction direction, units::second_t time) : m_claw(claw), m_direction(direction/10), m_time(time) {
+ClawFor::ClawFor(ClawSubsystem* claw, Direction direction, units::second_t time) : m_claw(claw), m_direction((double)direction/10), m_time(time) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(claw);
 }

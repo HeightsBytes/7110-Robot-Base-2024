@@ -14,6 +14,9 @@
 #include <frc2/command/button/POVButton.h>
 #include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/PrintCommand.h>
+#include <frc2/command/SelectCommand.h>
+#include <frc2/command/Commands.h>
+
 
 #include <frc/controller/PIDController.h>
 #include <frc/geometry/Translation2d.h>
@@ -28,10 +31,8 @@
 #include <wpi/MemoryBuffer.h>
 
 #include <utility>
-#include <cmath>
-#include <numbers>
 #include <memory>
-#include <unordered_map>
+#include <stdexcept>
 
 #include <units/angle.h>
 #include <units/velocity.h>
@@ -43,30 +44,14 @@
 #include "commands/Balance.h"
 #include "commands/ArmTo.h"
 #include "commands/ClawFor.h"
-#include "commands/DefaultDriveCMD.h"
 #include "commands/DefaultDrive.h"
 
-#include "utils/cams/Limelight.h"
 #include "subsystems/DriveSubsystem.h"
-#include "Constants.h"
-#include "utils/Util.h"
 
 using namespace DriveConstants;
 using namespace pathplanner;
 
-// Drive macros ensure that all outputs stay the same
-#define X_OUT [this] {return -m_speedLimitx.Calculate(frc::ApplyDeadband(hb::sgn(m_driverController.GetLeftY()) * pow(m_driverController.GetLeftY(), 2), 0.01));}
-#define Y_OUT [this] {return -m_speedLimity.Calculate(frc::ApplyDeadband(hb::sgn(m_driverController.GetLeftX()) * pow(m_driverController.GetLeftX(), 2), 0.01));}
-#define ROT_OUT [this] {return -frc::ApplyDeadband(hb::sgn(m_driverController.GetRightX()) * pow(m_driverController.GetRightX(), 2), 0.025) * DriveConstants::kMaxAngularSpeed.value();}
-
-RobotContainer::RobotContainer()
-{
-
-  /**
-   * Adding options to chooser should be done as such
-   * m_chooser.AddOption("Auto Name", &Auto);
-   * Where auto has already been declared in RobotContainer.h
-  */
+RobotContainer::RobotContainer() {
 
   m_chooser.AddOption("Test Auto", "test_auto");
   m_chooser.AddOption("Straight Line", "just_move");
@@ -84,8 +69,6 @@ RobotContainer::RobotContainer()
   // Other Commands
   NamedCommands::registerCommand("drive_balance", std::make_shared<Balance>(&m_drive));
   NamedCommands::registerCommand("drive_switch", std::move(m_drive.SetGyro(180_deg)));
-
-  NamedCommands::registerCommand("print_checkpoint", std::make_shared<frc2::PrintCommand>("Checkpoint"));
 
   frc::SmartDashboard::PutData("Arm", &m_arm);
   frc::SmartDashboard::PutData("Claw", &m_claw);
@@ -114,12 +97,8 @@ void RobotContainer::ConfigureButtonBindings() {
 
 void RobotContainer::ConfigureDriverButtons() {
 
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kA).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
-
-  // frc2::JoystickButton(&m_driverController, frc::XboxController::Button::kY).OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMidCone).ToPtr());
-
   m_driverController.A().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMsMaiCar).ToPtr());
-
+  
   m_driverController.Y().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
 
   m_driverController.B().OnTrue(m_drive.SetGyro(180_deg));
@@ -133,7 +112,7 @@ void RobotContainer::ConfigureOperatorButtons() {
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
-  std::string autoName = "red_auto";
+  std::string autoName = m_chooser.GetSelected();
 
 	const std::string filePath = frc::filesystem::GetDeployDirectory()
 			+ "/pathplanner/autos/" + autoName + ".auto";

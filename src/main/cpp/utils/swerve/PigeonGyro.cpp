@@ -3,7 +3,6 @@
 #include <frc/Timer.h>
 
 #include <cmath>
-#include <utility>
 #include <numbers>
 
 #include "utils/Util.h"
@@ -41,17 +40,17 @@ void PigeonGyro::Reset() {
   m_angle = m_rate = 0;
 }
 
-double PigeonGyro::GetPitch() {
+double PigeonGyro::GetPitch() const {
   return pigeon->GetPitch();
 }
 
-double PigeonGyro::GetRoll() {
+double PigeonGyro::GetRoll() const {
   return pigeon->GetRoll();
 }
 
 void PigeonGyro::Calibrate() {} // Gyro::Calibrate() is pure virtual
 
-frc::Rotation2d PigeonGyro::GetRot2d() {
+frc::Rotation2d PigeonGyro::GetRot2d() const {
   return frc::Rotation2d(units::degree_t(GetAngle()));
 }
 

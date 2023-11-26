@@ -9,11 +9,6 @@
 
 #pragma once
 
-#include <frc2/command/Command.h>
-#include <frc2/command/InstantCommand.h>
-#include <frc2/command/PIDCommand.h>
-#include <frc2/command/ParallelRaceGroup.h>
-#include <frc2/command/RunCommand.h>
 #include <frc2/command/button/CommandXboxController.h>
 
 #include <frc/XboxController.h>
@@ -31,9 +26,6 @@
 #include "subsystems/ArmSubsystem.h"
 #include "subsystems/ClawSubsystem.h"
 #include "subsystems/VisionSubsystem.h"
-
-//Commands
-#include "commands/DefaultDriveCMD.h"
 
 #include "Constants.h"
 
@@ -55,12 +47,6 @@ class RobotContainer {
 
   frc2::CommandXboxController m_driverController{OIConstants::kDriverControllerPort};
   frc2::CommandXboxController m_operatorController{OIConstants::kOperatorControllerPort};
-
-  // The robot's subsystems and commands are defined here...
-
-  frc::SlewRateLimiter<units::scalar> m_speedLimitx{3 / 1_s};
-  frc::SlewRateLimiter<units::scalar> m_speedLimity{3 / 1_s};
-  frc::SlewRateLimiter<units::scalar> m_triggerLimit{2 / 1_s};
 
   frc::PowerDistribution m_pdp{0, frc::PowerDistribution::ModuleType::kCTRE};
 

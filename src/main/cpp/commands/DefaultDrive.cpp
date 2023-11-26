@@ -7,14 +7,10 @@
 #include <frc/MathUtil.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include "units/velocity.h"
 #include "utils/Util.h"
 #include "Constants.h"
 
-/**
-#define X_OUT [this] {return -m_speedLimitx.Calculate(frc::ApplyDeadband(hb::sgn(m_driverController.GetLeftY()) * pow(m_driverController.GetLeftY(), 2), 0.01));}
-#define Y_OUT [this] {return -m_speedLimity.Calculate(frc::ApplyDeadband(hb::sgn(m_driverController.GetLeftX()) * pow(m_driverController.GetLeftX(), 2), 0.01));}
-#define ROT_OUT [this] {return -frc::ApplyDeadband(hb::sgn(m_driverController.GetRightX()) * pow(m_driverController.GetRightX(), 2), 0.025) * DriveConstants::kMaxAngularSpeed.value();}
-*/
 
 DefaultDrive::DefaultDrive(DriveSubsystem* drive, frc2::CommandXboxController* controller):
   m_drive(drive), m_controller(controller), m_maxSpeed(DriveConstants::kMaxSpeed.value()) {
@@ -23,37 +19,40 @@ DefaultDrive::DefaultDrive(DriveSubsystem* drive, frc2::CommandXboxController* c
 }
 
 // Called when the command is initially scheduled.
-void DefaultDrive::Initialize() {
-  frc::SmartDashboard::PutNumber("Max Speed", m_maxSpeed);
-}
+void DefaultDrive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void DefaultDrive::Execute() {
 
-  double maxSpeed = frc::SmartDashboard::GetNumber("Max Speed", DriveConstants::kMaxSpeed.value());
-  maxSpeed = maxSpeed * (m_controller->GetRightTriggerAxis() * 0.625 + 0.375);
+  double maxSpeed = m_maxSpeed * (m_controller->GetRightTriggerAxis() * 0.625 + 0.375);
 
   // Note: x is forwards, y is side to side. 
+  // This means 'x' is the traditional y direction
+  // 'y' is the tradtional x
+  double x = -m_controller->GetLeftY();
+  double y = m_controller->GetLeftX();
+  double rotationMagnitude = -frc::ApplyDeadband(m_controller->GetRightX(), 0.025);
 
-  double x = -frc::ApplyDeadband(m_controller->GetLeftY(), 0.01);
-  double y = frc::ApplyDeadband(m_controller->GetLeftX(), 0.01);
-  double rot = -frc::ApplyDeadband(m_controller->GetRightX(), 0.025);
+  double magnitude = std::pow(frc::ApplyDeadband(hb::hypot(x, y), 0.01), 2) * maxSpeed;
 
-
-  double mag = std::pow(hb::hypot(x, y), 2) * maxSpeed;
+  // Determining the angle itself. If y==0 then we can simply multiply pi/2 by the sign of x
   double angle = y == 0 ? hb::sgn(x)*std::numbers::pi/2 : std::atan(x/y);
+  // Below we have to consider quadrants. Because arctan is limited to -pi/2 to pi/2
+  // Check second quadrant
   if (x > 0 && y < 0) angle += std::numbers::pi;
+  // Check third quadrant
   if (x < 0 && y < 0) angle += std::numbers::pi;
+  // Check edge case where x is zero and y is across zero
   if (x == 0 && y < 0) angle += std::numbers::pi;
 
-  units::meters_per_second_t xMove = units::meters_per_second_t(mag * std::sin(angle));
-  units::meters_per_second_t yMove = -units::meters_per_second_t(mag * std::cos(angle));
-  units::radians_per_second_t rotMove = units::radians_per_second_t(rot * DriveConstants::kMaxAngularSpeed.value());
+  units::meters_per_second_t xComponent = units::meters_per_second_t(magnitude * std::sin(angle));
+  units::meters_per_second_t yComponent = -units::meters_per_second_t(magnitude * std::cos(angle));
+  units::radians_per_second_t rotation = units::radians_per_second_t(rotationMagnitude * DriveConstants::kMaxAngularSpeed.value());
 
   m_drive->Drive(
-    xMove,
-    yMove,
-    rotMove,
+    xComponent,
+    yComponent,
+    rotation,
     true
   );
 

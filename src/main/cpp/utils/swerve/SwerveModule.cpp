@@ -58,12 +58,12 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
 
 }
 
-frc::SwerveModuleState SwerveModule::GetState() {
+frc::SwerveModuleState SwerveModule::GetState() const {
   return {units::meters_per_second_t{m_sparkDriveEncoder.GetVelocity()},
           frc::Rotation2d(units::radian_t(m_sparkTurnEncoder.GetPosition()))};
 }
 
-frc::SwerveModulePosition SwerveModule::GetPosition() {
+frc::SwerveModulePosition SwerveModule::GetPosition() const {
     return {units::meter_t(m_sparkDriveEncoder.GetPosition()), units::radian_t(m_sparkTurnEncoder.GetPosition())};
 }
 

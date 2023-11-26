@@ -4,30 +4,9 @@
 
 #include "Robot.h"
 
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/DataLogManager.h>
-#include <frc/DriverStation.h>
-
 #include <frc2/command/CommandScheduler.h>
 
-#include "utils/cams/Limelight.h"
-
-void Robot::RobotInit() {
-
-  // // Auto Logs all data sent to network tables to datalogs on Rio
-  // frc::DataLogManager::Start();
-  // frc::DataLogManager::LogNetworkTables(true);
-
-  // // Logs all data from the Driver Station to the log
-  // frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
-
-  // // Tells user where to find the log for this run of the robot
-  // printf("************** LOG STARTED AT %s **************\n", frc::DataLogManager::GetLogDir().c_str());
-
-  // // Ensures the LimeLight doesn't burn our eyes out upon startup
-  // hb::LimeLight::SetLED(hb::LimeLight::LEDMode::kOn);
-
-}
+void Robot::RobotInit() {}
 
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -46,9 +25,7 @@ void Robot::RobotPeriodic() {
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() {
-  // hb::limeLight::SetLED(hb::limeLight::LEDMode::kOff);
-}
+void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
@@ -58,11 +35,11 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
 
-  // hb::limeLight::SetLED(hb::limeLight::LEDMode::kOn);
-
+  // Load autonomous command
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
-  if (nullptr != m_autonomousCommand.get()) {
+  // calls operator bool() to check if CommandPtr is valid
+  if (m_autonomousCommand) {
     m_autonomousCommand.Schedule();
   }
 
@@ -75,8 +52,7 @@ void Robot::TeleopInit() {
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
-
-  // hb::limeLight::SetLED(hb::limeLight::LEDMode::kOn);
+  m_autonomousCommand.Cancel();
 }
 
 /**

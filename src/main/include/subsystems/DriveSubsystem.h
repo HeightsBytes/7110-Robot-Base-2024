@@ -35,15 +35,12 @@
 
 #include <units/angle.h>
 
-#include <array>
-
 // Pathplanner
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
 
-#include "Constants.h"
 #include "utils/swerve/SwerveModule.h"
 #include "utils/swerve/PigeonGyro.h"
 #include "subsystems/VisionSubsystem.h"
@@ -51,19 +48,9 @@
 class DriveSubsystem : public frc2::SubsystemBase {
  public:
 
-  enum class Target {
-    kCone = 0, 
-    kCube
-  };
-
   DriveSubsystem();
 
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
   void Periodic() override;
-
-  // Subsystem methods go here.
 
   /**
    * Drives the robot at given x, y and theta speeds. Speeds range from [-1, 1]
@@ -80,19 +67,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
              units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
              bool fieldRelative);
 
-  void DriveFieldRelative(frc::ChassisSpeeds speeds);
+  void DriveRobotRelative(frc::ChassisSpeeds speeds);
 
-  void DriveRobotRelative(frc::ChassisSpeeds speeds, bool auton);
-
-  // frc2::CommandPtr DriveTo(frc::Pose2d position, units::meter_t rotDelayDist);
-
-  frc::ChassisSpeeds GetVelocity();
-
-
-  /**
-   * Resets the drive encoders to currently read a position of 0.
-   */
-  void ResetEncoders();
+  frc::ChassisSpeeds GetVelocity() const;
 
   /**
    * Sets the drive MotorControllers to a power from -1 to 1.
@@ -102,76 +79,54 @@ class DriveSubsystem : public frc2::SubsystemBase {
   /**
    * @returns array of the modules speeds and directions in the order [fl, fr, rl, rr]
   */
-  wpi::array<frc::SwerveModuleState, 4> GetModuleStates();
+  wpi::array<frc::SwerveModuleState, 4> GetModuleStates() const;
 
   /**
    * @returns array of the modules displacements and directions in the order [fl, fr, rl, rr]
   */  
-  wpi::array<frc::SwerveModulePosition, 4> GetModulePositions();
+  wpi::array<frc::SwerveModulePosition, 4> GetModulePositions() const;
 
   /**
-   * Zeroes the heading of the robot.
+   * @brief Returns the offseted heading
+   * 
+   * @return frc::Rotation2d 
    */
-  void ZeroHeading();
+  frc::Rotation2d GetHeading() const;
 
-  frc::Rotation2d GetHeading() {
-    return gyro.GetRot2d().Degrees() + m_offset;
-  }
+  /**
+   * @brief Sets the offset of the gyro
+   * 
+   * @param offset 
+   */
+  void SetOffset(units::degree_t offset);
 
-  void SetOffset(units::degree_t offset) {
-    m_offset = offset;
-  }
+  /**
+   * @brief Returns the roll of the robot
+   * 
+   * @return double 
+   */
+  double GetRoll() const;
 
+  /**
+   * @brief Returns the pitch of the robot
+   * 
+   * @return double 
+   */
+  double GetPitch() const;
 
   /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The pose.
    */
-  frc::Pose2d GetPose();
+  frc::Pose2d GetPose() const;
 
   // Sets the pose of the robot's estimator
   void SetPose(frc::Pose2d pose);
 
-  void SetTarget(Target target);
-
-  Target GetTarget();
+  frc2::CommandPtr SetGyro(units::degree_t angle);
 
   void InitSendable(wpi::SendableBuilder& builder) override;
-
-  inline void ToggleVision() {
-    m_vision ? m_vision = false : m_vision = true;
-  }
-
-  inline void VisionEnabled(bool enabled) {
-    m_vision = enabled;
-  }
-
-  void ResetGyro() {
-      gyro.Reset();
-  }
-
-  units::meter_t kTrackWidth =
-      0.31369_m;  // Distance between centers of right and left wheels on robot
-  units::meter_t kWheelBase =
-      0.31369_m;  // Distance between centers of front and back wheels on robot
-
-  // Forward is +x and left is +y
-  frc::SwerveDriveKinematics<4> kDriveKinematics{
-      frc::Translation2d(kWheelBase, kTrackWidth),
-      frc::Translation2d(kWheelBase, -kTrackWidth),
-      frc::Translation2d(-kWheelBase, kTrackWidth),
-      frc::Translation2d(-kWheelBase, -kTrackWidth)};
-
-
-  hb::PigeonGyro gyro{DriveConstants::CanIds::kPidgeonID};
-
-  inline frc2::CommandPtr SetGyro(units::degree_t angle) {
-    return this->RunOnce(
-      [angle, this] {SetOffset(angle);}
-    );
-  }
-
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
@@ -182,11 +137,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
   SwerveModule m_frontRight;
   SwerveModule m_rearRight;
 
+  hb::PigeonGyro m_gyro;
+
   units::degree_t m_offset = 0_deg;
-
-  frc::ProfiledPIDController<units::radians> m_turnController{7.5, 0, 0,
-   {DriveConstants::kMaxAngularSpeed, DriveConstants::kMaxAngularAcceleration}};
-
 
   frc::Field2d m_field;
 
@@ -195,7 +148,5 @@ class DriveSubsystem : public frc2::SubsystemBase {
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
   bool m_vision;
-
-  Target m_target;
 
 };

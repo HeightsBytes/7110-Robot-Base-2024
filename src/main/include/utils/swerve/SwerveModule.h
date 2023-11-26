@@ -46,13 +46,13 @@ class SwerveModule {
    * Both the velocity of the swerve module and the angle of it
    * @returns frc::SwerveModuleState
   */
-  frc::SwerveModuleState GetState();
+  frc::SwerveModuleState GetState() const;
 
   /**
    * Both the angle of the swerve module and the total distance of the drive motor
    * @returns frc::SwerveModulePosition 
   */
-  frc::SwerveModulePosition GetPosition();
+  frc::SwerveModulePosition GetPosition() const;
 
   /**
    * @param frc::SwerveModuleState the target state

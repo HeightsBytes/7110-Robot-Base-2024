@@ -51,13 +51,19 @@ std::vector<PosePacket_t> VisionSubsystem::GetPose() {
     } catch (...) {}
 
     try {
-        PosePacket_t estl = PhotonToPosePacket(m_leftEst.Update());
-        if (estl.has_value()) packets.emplace_back(estl);
+        std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
+        if (estl.has_value()) {
+            if (estl.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) 
+                packets.emplace_back(PhotonToPosePacket(estl));
+        }
     } catch (...) {}
     
     try {
-        PosePacket_t estr = PhotonToPosePacket(m_rightEst.Update());
-        if (estr.has_value()) packets.emplace_back(estr);
+        std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
+        if (estr.has_value()) {
+            if (estr.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) 
+                packets.emplace_back(PhotonToPosePacket(estr));
+        }
     } catch (...) {}
 
     return packets;
