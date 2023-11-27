@@ -11,7 +11,6 @@
 #pragma once
 
 #include <optional>
-#include <utility>
 #include <vector>
 
 #include <frc2/command/SubsystemBase.h>

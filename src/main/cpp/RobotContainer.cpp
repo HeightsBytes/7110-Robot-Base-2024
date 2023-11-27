@@ -50,7 +50,6 @@
 #include "subsystems/ClawSubsystem.h"
 #include "subsystems/DriveSubsystem.h"
 
-using namespace DriveConstants;
 using namespace pathplanner;
 
 RobotContainer::RobotContainer() {
