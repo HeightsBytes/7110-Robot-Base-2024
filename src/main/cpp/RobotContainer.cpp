@@ -105,8 +105,6 @@ void RobotContainer::ConfigureDriverButtons() {
   
   m_driverController.Y().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
 
-  m_driverController.X().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMidCubeConePickup).ToPtr());
-
   m_driverController.RightBumper().OnTrue(m_claw.RunCMD(-0.7)).OnFalse(m_claw.RunCMD(0));
 
   m_driverController.LeftBumper().OnTrue(m_claw.RunCMD(0.7)).OnFalse(m_claw.RunCMD(0));
