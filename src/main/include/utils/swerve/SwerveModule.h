@@ -28,9 +28,6 @@
 #include <units/velocity.h>
 #include <units/temperature.h>
 
-#include <numbers>
-
-#include "Constants.h"
 #include "utils/swerve/CANCoder.h"
 
 class SwerveModule {

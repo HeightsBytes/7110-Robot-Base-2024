@@ -26,8 +26,6 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
   m_driveMotor.RestoreFactoryDefaults();
   m_turningMotor.RestoreFactoryDefaults();
 
-  m_driveMotor.SetClosedLoopRampRate(0.5);
-
   // make motors default to break mode
   m_driveMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   m_turningMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
