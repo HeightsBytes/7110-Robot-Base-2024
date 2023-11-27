@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "drive_switch_2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "arm_car"
           }
         },
@@ -40,6 +34,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_switch"
           }
         },
         {

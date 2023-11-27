@@ -23,7 +23,7 @@ namespace hb {
     }
 
     inline double hypot(double a, double b) {
-        return std::sqrt(a*a + b*b);
+        return std::sqrt(std::pow(a, 2) + std::pow(b, 2));
     }
 
 } // namespace hb

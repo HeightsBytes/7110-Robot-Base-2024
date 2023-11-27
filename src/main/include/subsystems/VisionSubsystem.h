@@ -29,7 +29,7 @@
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
 
-typedef std::optional<std::pair<units::second_t, frc::Pose2d>> PosePacket_t;
+#include "utils/cams/PosePacket.h"
 
 /******************************************************************************\
  *                                                                            *
@@ -57,13 +57,13 @@ class VisionSubsystem : public frc2::SubsystemBase {
 
   photonlib::PhotonPipelineResult GetRightFrame();
 
-  std::vector<PosePacket_t> GetPose();
+  std::vector<PosePacket> GetPose();
 
  private:
 
   VisionSubsystem();
 
-  PosePacket_t PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose);
+  std::optional<PosePacket> PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose);
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

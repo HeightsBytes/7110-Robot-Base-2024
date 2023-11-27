@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "frc2/command/Commands.h"
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/CommandPtr.h>
 

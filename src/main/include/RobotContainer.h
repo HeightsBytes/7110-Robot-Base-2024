@@ -22,6 +22,7 @@
 
 
 //Subsystems
+#include "frc2/command/CommandPtr.h"
 #include "subsystems/DriveSubsystem.h"
 #include "subsystems/ArmSubsystem.h"
 #include "subsystems/ClawSubsystem.h"

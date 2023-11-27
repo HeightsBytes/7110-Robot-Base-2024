@@ -13,6 +13,7 @@
 
 #include "Constants.h"
 #include "utils/cams/Limelight.h"
+#include "utils/cams/PosePacket.h"
 
 
 
@@ -40,29 +41,33 @@ photonlib::PhotonPipelineResult VisionSubsystem::GetRightFrame() {
     return m_rightEst.GetCamera()->GetLatestResult();
 }
 
-std::vector<PosePacket_t> VisionSubsystem::GetPose() {
+std::vector<PosePacket> VisionSubsystem::GetPose() {
 
-    std::vector<PosePacket_t> packets;
+    std::vector<PosePacket> packets;
 
 
     try {
-        PosePacket_t estll = hb::LimeLight::GetPose();
-        if (estll.has_value()) packets.emplace_back(estll);
+        std::optional<PosePacket> packet = hb::LimeLight::GetPose();
+        if (packet.has_value()) {
+            packets.emplace_back(packet.value());
+        }
     } catch (...) {}
 
     try {
         std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
         if (estl.has_value()) {
-            if (estl.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) 
-                packets.emplace_back(PhotonToPosePacket(estl));
+            if (estl.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
+                packets.emplace_back(PhotonToPosePacket(estl).value());
+            }
         }
     } catch (...) {}
     
     try {
         std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
         if (estr.has_value()) {
-            if (estr.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) 
-                packets.emplace_back(PhotonToPosePacket(estr));
+            if (estr.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
+                packets.emplace_back(PhotonToPosePacket(estr).value());
+            }
         }
     } catch (...) {}
 
@@ -70,8 +75,8 @@ std::vector<PosePacket_t> VisionSubsystem::GetPose() {
 }
 
 
-PosePacket_t VisionSubsystem::PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose) {
+std::optional<PosePacket> VisionSubsystem::PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose) {
     if (!pose.has_value()) return std::nullopt;
-
-    return std::make_pair(pose.value().timestamp, pose.value().estimatedPose.ToPose2d());
+    
+    return PosePacket(pose.value().estimatedPose.ToPose2d(), pose.value().timestamp);
 }

@@ -16,7 +16,6 @@
 
 #include <wpi/sendable/SendableBuilder.h>
 
-#include "utils/cams/Limelight.h"
 #include "Constants.h"
 #include "utils/Util.h"
 
@@ -56,18 +55,19 @@ DriveSubsystem::DriveSubsystem()
                         AutoConstants::kConfig, 
                         this
                       );
+                      frc::SmartDashboard::PutNumber("Max Speed", m_maxSpeed.value());
                     }
 
 void DriveSubsystem::Periodic() {
   // Implementation of subsystem periodic method goes here.
   m_poseEstimator.Update(GetHeading(), GetModulePositions());
 
-
+  m_maxSpeed = units::meters_per_second_t(frc::SmartDashboard::GetNumber("Max Speed", 0));
+  
   if (m_vision) {
-    std::vector<PosePacket_t> CamPose = m_visionSystem.GetPose();
-    // Poses are filtered so ever packet is valid
-    for (PosePacket_t i : CamPose) {
-      m_poseEstimator.AddVisionMeasurement(i.value().second, i.value().first);
+    std::vector<PosePacket> CamPose = m_visionSystem.GetPose();
+    for (PosePacket i : CamPose) {
+      m_poseEstimator.AddVisionMeasurement(i.pose, i.timestamp);
     }
   }
 
@@ -96,7 +96,7 @@ void DriveSubsystem::DriveRobotRelative(frc::ChassisSpeeds speeds) {
 
 void DriveSubsystem::SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates) {
 
-  kDriveKinematics.DesaturateWheelSpeeds(&desiredStates, AutoConstants::kMaxSpeed);
+  kDriveKinematics.DesaturateWheelSpeeds(&desiredStates, m_maxSpeed);
   
   m_frontLeft.SetDesiredState(desiredStates[0]);
   m_frontRight.SetDesiredState(desiredStates[1]);

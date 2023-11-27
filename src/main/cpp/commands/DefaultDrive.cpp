@@ -31,7 +31,7 @@ void DefaultDrive::Execute() {
   // 'y' is the tradtional x
   double x = -m_controller->GetLeftY();
   double y = m_controller->GetLeftX();
-  double rotationMagnitude = -frc::ApplyDeadband(m_controller->GetRightX(), 0.025);
+  double rotationMagnitude = -frc::ApplyDeadband(m_controller->GetRightX(), 0.03);
 
   double magnitude = std::pow(frc::ApplyDeadband(hb::hypot(x, y), 0.01), 2) * maxSpeed;
 

@@ -1,11 +1,10 @@
 #include "utils/cams/Limelight.h"
+#include "utils/cams/PosePacket.h"
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableInstance.h>
 
-#include <cmath>
-#include <numbers>
-#include <string>
+#include <optional>
 #include <vector>
 
 #include <frc/DriverStation.h>
@@ -56,20 +55,20 @@ LimeLight::LEDMode LimeLight::GetLED() {
   return LimeLight::LEDMode(GETVAL("ledMode"));
 }
 
-PosePacket_t LimeLight::GetPose() {
+std::optional<PosePacket> LimeLight::GetPose() {
   static std::vector<double> results;
+  if (!HasTarget()) {
+    return std::nullopt;
+  }
   if (frc::DriverStation::GetAlliance() != frc::DriverStation::Alliance::kBlue) {
     results = nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumberArray("botpose_wpiblue", std::span<const double>());
   } else {
     results = nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumberArray("botpose_wpired", std::span<const double>());
-  }
-  if (!HasTarget()) {
-    return std::nullopt;
   }
   frc::Translation2d translation{units::meter_t(results[0]), units::meter_t(results[1])};
   frc::Rotation2d rotation{units::degree_t(results[5])};
   frc::Pose2d pose{translation, rotation};
   units::second_t timestamp{results[6]};
 
-  return PosePacket_t(std::make_pair(timestamp, pose));
+  return PosePacket(pose, timestamp);
 }

@@ -41,6 +41,9 @@
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
 
+#include "Constants.h"
+#include "frc/filter/SlewRateLimiter.h"
+#include "units/velocity.h"
 #include "utils/swerve/SwerveModule.h"
 #include "utils/swerve/PigeonGyro.h"
 #include "subsystems/VisionSubsystem.h"
@@ -69,12 +72,12 @@ class DriveSubsystem : public frc2::SubsystemBase {
 
   void DriveRobotRelative(frc::ChassisSpeeds speeds);
 
-  frc::ChassisSpeeds GetVelocity() const;
-
   /**
    * Sets the drive MotorControllers to a power from -1 to 1.
    */
   void SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates);
+
+  frc::ChassisSpeeds GetVelocity() const;
 
   /**
    * @returns array of the modules speeds and directions in the order [fl, fr, rl, rr]
@@ -148,5 +151,7 @@ class DriveSubsystem : public frc2::SubsystemBase {
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
   bool m_vision;
+
+  units::meters_per_second_t m_maxSpeed = DriveConstants::kMaxSpeed;
 
 };

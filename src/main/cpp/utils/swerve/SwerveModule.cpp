@@ -23,10 +23,17 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
       m_id(turningEncoderPorts) 
   {
 
+  m_driveMotor.RestoreFactoryDefaults();
+  m_turningMotor.RestoreFactoryDefaults();
+
+  m_driveMotor.SetClosedLoopRampRate(0.5);
+
   // make motors default to break mode
   m_driveMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   m_turningMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   m_turningMotor.SetInverted(true);
+
+  // m_driveMotor.SetClosedLoopRampRate(0.5);
 
   // set the turn conversion factors
   m_sparkTurnEncoder.SetPositionConversionFactor(ModuleConstants::kTurnEncoderRatio);

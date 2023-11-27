@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "frc2/command/CommandPtr.h"
 #include <frc2/command/SubsystemBase.h>
 
 #include <frc/motorcontrol/VictorSP.h>
@@ -33,6 +34,18 @@ class ClawSubsystem : public frc2::SubsystemBase {
   void Enable(bool enabled);
 
   bool IsEnabled();
+
+  frc2::CommandPtr RunCMD(double val) {
+    return RunOnce(
+      [this, val] {Run(val);}
+    );
+  }
+
+  frc2::CommandPtr StopMotorsCMD() {
+    return RunOnce(
+      [this] {StopMotors();}
+    );
+  }
 
   void InitSendable(wpi::SendableBuilder& builder) override;
 

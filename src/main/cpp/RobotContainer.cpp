@@ -46,6 +46,8 @@
 #include "commands/ClawFor.h"
 #include "commands/DefaultDrive.h"
 
+#include "subsystems/ArmSubsystem.h"
+#include "subsystems/ClawSubsystem.h"
 #include "subsystems/DriveSubsystem.h"
 
 using namespace DriveConstants;
@@ -55,6 +57,8 @@ RobotContainer::RobotContainer() {
 
   m_chooser.AddOption("Test Auto", "test_auto");
   m_chooser.AddOption("Straight Line", "just_move");
+  m_chooser.AddOption("Balance Path", "red_auto");
+  m_chooser.AddOption("Crazy Auto", "red_crazy_auto");
 
   // Arm Commands
   NamedCommands::registerCommand("arm_mid_cone", std::make_shared<ArmTo>(&m_arm, ArmSubsystem::State::kMidCone));
@@ -101,7 +105,11 @@ void RobotContainer::ConfigureDriverButtons() {
   
   m_driverController.Y().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kStow).ToPtr());
 
-  m_driverController.B().OnTrue(m_drive.SetGyro(180_deg));
+  m_driverController.X().OnTrue(ArmTo(&m_arm, ArmSubsystem::State::kMidCubeConePickup).ToPtr());
+
+  m_driverController.RightBumper().OnTrue(m_claw.RunCMD(-0.7)).OnFalse(m_claw.RunCMD(0));
+
+  m_driverController.LeftBumper().OnTrue(m_claw.RunCMD(0.7)).OnFalse(m_claw.RunCMD(0));
 
 }
 

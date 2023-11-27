@@ -7,16 +7,14 @@
 
 #pragma once
 
-#include <array>
 #include <optional>
-#include <utility>
 
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Pose2d.h>
 
 #include <units/time.h>
 
-typedef std::optional<std::pair<units::second_t, frc::Pose2d>> PosePacket_t;
+#include "PosePacket.h"
 
 namespace hb {
   
@@ -121,11 +119,11 @@ namespace hb {
       /**
        * @brief Get the pose of the robot (If it exists). If one option is null, they both are
        * 
-       * @return std::pair<std::optional<frc::Pose2d>, std::optional<units::second_t>> 
+       * @return optional PosePacket{contains pose and timestamp}
        * 
        * @warning you will need to handle nullopt
        */
-      static PosePacket_t GetPose();
+      static std::optional<PosePacket> GetPose();
 
   };
 } // namespace hb
