@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cmath>
+#include <frc/MathUtil.h>
 
 #define LAMBDA(x) [this] {return x;}
 

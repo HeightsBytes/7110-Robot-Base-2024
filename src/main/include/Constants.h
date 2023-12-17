@@ -26,8 +26,6 @@
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/path/PathConstraints.h>
 
-#include "subsystems/ArmSubsystem.h"
-
 #include <numbers>
 
 
@@ -120,38 +118,6 @@ namespace VisionConstants {
     inline const frc::Transform3d LeftTransform{frc::Translation3d(-15_in, 7_in, 24_in), frc::Rotation3d{0_deg, 0_deg, 150_deg}};
 }
 
-namespace ArmConstants {
-    inline constexpr int kExtensionID = 9;
-    inline constexpr int kActuatorID = 1;
-    inline constexpr int kActuatorEncoderID = 0;
-    inline constexpr double kPExtension = 0.03;
-    inline constexpr double kPActuator = 1;
-
-    // Arm extension is bound from [0, 160]
-    inline constexpr uint8_t kMaxExtend = 160;
-    inline constexpr uint8_t kMinExtend = 0;
-    // Arm angle is bound from [0, 100]
-    // to keep from sticking, [2, 98] is prefered
-    inline constexpr uint8_t kMaxAngle = 98;
-    inline constexpr uint8_t kMinAngle = 2;
-    
-    // Other important extensions
-    inline constexpr uint8_t kCubeScoreConePickupExtension = 100;
-    inline constexpr uint8_t kCubePickupExtension = 50;
-    
-    namespace Positions {
-        inline const ArmPosition kConeMid{kMaxExtend, kMinAngle};
-        inline const ArmPosition kCubeMidConePickup{kCubeScoreConePickupExtension, kMinAngle};
-        inline const ArmPosition kCubePickup{kCubePickupExtension, kMinExtend};
-        inline const ArmPosition kStow{kMinExtend, kMaxAngle};
-        inline const ArmPosition kMsMaiCar{kMinExtend, kMinAngle};
-    }
-}
-
-namespace ClawConstants {
-    inline constexpr int kClawID = 0;
-    inline constexpr int kClawPDPPole = 9;
-}
 
 namespace AutoConstants {
 

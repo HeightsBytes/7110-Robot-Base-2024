@@ -10,22 +10,18 @@
 #pragma once
 
 #include <frc2/command/button/CommandXboxController.h>
+#include <frc2/command/CommandPtr.h>
 
 #include <frc/XboxController.h>
 #include <frc/controller/PIDController.h>
-#include <frc/controller/ProfiledPIDController.h>
 #include <frc/smartdashboard/SendableChooser.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc/DutyCycleEncoder.h>
 #include <frc/PowerDistribution.h>
 
 
 //Subsystems
-#include "frc2/command/CommandPtr.h"
 #include "subsystems/DriveSubsystem.h"
-#include "subsystems/ArmSubsystem.h"
-#include "subsystems/ClawSubsystem.h"
 #include "subsystems/VisionSubsystem.h"
 
 #include "Constants.h"
@@ -53,15 +49,11 @@ class RobotContainer {
 
   // The robot's subsystems
   DriveSubsystem m_drive;
-  ArmSubsystem m_arm;
-  ClawSubsystem m_claw{&m_pdp};
   VisionSubsystem& m_vision = VisionSubsystem::GetInstance();
 
   // The chooser for the autonomous routines
   
   frc::SendableChooser<std::string> m_chooser;
-
-  void ConfigureButtonBindings();
 
   void ConfigureDriverButtons();
   
