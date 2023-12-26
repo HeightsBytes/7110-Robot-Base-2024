@@ -2,12 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-/**
- * @file VisionSubsystem.h
- * @author Nathan Correa
- * @date 2023-08-19
- */
-
 #pragma once
 
 #include <optional>
@@ -19,11 +13,6 @@
 #include <frc/apriltag/AprilTagFields.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/smartdashboard/Field2d.h>
-#include <frc/filter/LinearFilter.h>
-
-#include <wpi/sendable/SendableBuilder.h>
-
-#include <units/time.h>
 
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
@@ -63,9 +52,6 @@ class VisionSubsystem : public frc2::SubsystemBase {
   VisionSubsystem();
 
   std::optional<PosePacket> PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose);
-
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
 
   frc::AprilTagFieldLayout m_layout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp);
 

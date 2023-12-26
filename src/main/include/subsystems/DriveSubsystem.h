@@ -2,32 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-/**
- * @file DriveSubsystem
- * @author Nathan Correa
- * @date 2023-08-19
- */
-
 #pragma once
 
-#include <frc/ADXRS450_Gyro.h>
-#include <frc/Encoder.h>
-#include <frc/drive/MecanumDrive.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
-#include <frc/interfaces/Gyro.h>
 #include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
-#include <frc/motorcontrol/PWMSparkMax.h>
 #include <frc/kinematics/SwerveModulePosition.h>
-#include <frc/DigitalInput.h>
-#include <frc/controller/ProfiledPIDController.h>
-#include <frc/controller/HolonomicDriveController.h>
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
-#include <frc/filter/LinearFilter.h>
 
 #include <frc2/command/SubsystemBase.h>
 
@@ -35,7 +20,6 @@
 
 #include <units/angle.h>
 
-// Pathplanner
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
