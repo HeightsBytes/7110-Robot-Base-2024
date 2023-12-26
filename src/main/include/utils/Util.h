@@ -1,10 +1,3 @@
-/**
- * @file Util.h
- * @author Nathan Correa
- * @brief A few utils commonly used across the robot's code
- * @date 2023-08-19
- */
-
 #pragma once
 
 #include <cmath>

@@ -1,11 +1,4 @@
-/**
- * @file CANCoder.h
- * @author Nathan Correa
- * @brief CANCoder for swerve modules
- * @date 2023-08-19
- */
-
-#pragma once 
+#pragma once
 
 #include <ctre/phoenix.h>
 

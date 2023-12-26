@@ -2,12 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-/**
- * @file Robot.h
- * @date 2023-08-19
- */
-
 #pragma once
+
+#include <optional>
 
 #include <frc2/command/Command.h>
 #include <frc2/command/Commands.h>
@@ -31,7 +28,7 @@ class Robot : public frc::TimedRobot {
 
  private:
   // Have it as 'none' by default to ensure nothing will happen if there is no auto
-  frc2::CommandPtr m_autonomousCommand = frc2::cmd::None();
+  std::optional<frc2::CommandPtr> m_autonomousCommand;
 
   RobotContainer m_container;
 };

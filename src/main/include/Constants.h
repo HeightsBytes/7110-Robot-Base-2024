@@ -2,10 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-/**
- * @file Constants.h
- * @date 2023-08-19
- */
 #pragma once
 
 #include <frc/geometry/Translation2d.h>
@@ -78,7 +74,7 @@ namespace DriveConstants {
     inline constexpr auto kTrackWidth = 0.31369_m;
     inline constexpr auto kTrackLength = 0.31369_m;
 
-  // Forward is +x and left is +y
+    // Forward is +x and left is +y
     inline frc::SwerveDriveKinematics<4> kDriveKinematics{
         frc::Translation2d(kTrackLength, kTrackWidth),
         frc::Translation2d(kTrackLength, -kTrackWidth),
@@ -111,12 +107,13 @@ namespace ModuleConstants {
     inline constexpr double kITurn = 0;
     inline constexpr double kDTurn = 0;
     inline constexpr double kFFTurn = 0;
+
 }  // namespace ModuleConstants
 
 namespace VisionConstants {
     inline const frc::Transform3d RightTransform{frc::Translation3d(-15_in, -7_in, 24_in), frc::Rotation3d{0_deg, 0_deg, -150_deg}};
     inline const frc::Transform3d LeftTransform{frc::Translation3d(-15_in, 7_in, 24_in), frc::Rotation3d{0_deg, 0_deg, 150_deg}};
-}
+} // namespace VisionConstants
 
 
 namespace AutoConstants {
@@ -140,12 +137,9 @@ namespace AutoConstants {
     inline constexpr pathplanner::PathConstraints kConstraints{
         kMaxSpeed, kMaxAcceleration, kMaxAngularSpeed, kMaxAngularAcceleration};
 
-
 }  // namespace AutoConstants
 
 namespace OIConstants {
-
     inline constexpr int kDriverControllerPort = 0;
     inline constexpr int kOperatorControllerPort = 1;
-
 }  // namespace OIConstants

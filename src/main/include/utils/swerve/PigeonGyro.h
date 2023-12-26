@@ -1,10 +1,3 @@
-/**
- * @file PigeonGyro.h
- * @author Nathan Correa
- * @brief Pigeon gyro for swerve drive
- * @date 2023-08-19
- */
-
 #pragma once
 
 #include <frc/interfaces/Gyro.h>

@@ -1,8 +1,3 @@
-/**
- * @file Linear.h
- * @author Nathan Correa
- * @date 2023-08-19
- */
 #pragma once
 
 #include "RegressionBase.h"
