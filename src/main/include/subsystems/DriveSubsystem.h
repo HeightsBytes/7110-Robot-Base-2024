@@ -152,6 +152,4 @@ class DriveSubsystem : public frc2::SubsystemBase {
 
   bool m_vision;
 
-  units::meters_per_second_t m_maxSpeed = DriveConstants::kMaxSpeed;
-
 };

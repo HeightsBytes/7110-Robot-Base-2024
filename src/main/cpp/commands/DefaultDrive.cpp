@@ -13,7 +13,7 @@
 
 
 DefaultDrive::DefaultDrive(DriveSubsystem* drive, frc2::CommandXboxController* controller):
-  m_drive(drive), m_controller(controller), m_maxSpeed(DriveConstants::kMaxSpeed.value()) {
+  m_drive(drive), m_controller(controller) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drive);
 }
@@ -24,7 +24,8 @@ void DefaultDrive::Initialize() {}
 // Called repeatedly when this Command is scheduled to run
 void DefaultDrive::Execute() {
 
-  double maxSpeed = m_maxSpeed * (m_controller->GetRightTriggerAxis() * 0.625 + 0.375);
+  double maxSpeed = DriveConstants::kMaxChassisSpeed.value() * 
+                    (m_controller->GetRightTriggerAxis() * 0.625 + 0.375);
 
   // Note: x is forwards, y is side to side. 
   // This means 'x' is the traditional y direction

@@ -67,7 +67,7 @@ namespace DriveConstants {
     inline constexpr double kFrontRightOffset = 107.48-180.0; //encoder 3
     inline constexpr double kRearRightOffset = -168.75+180.0; //encoder 4
 
-    inline constexpr auto kMaxSpeed = 4.25_mps;
+    inline constexpr auto kMaxChassisSpeed = 4.25_mps;
     inline constexpr auto kMaxAngularSpeed = units::radians_per_second_t(1 * std::numbers::pi);
     inline constexpr auto kMaxAngularAcceleration = units::radians_per_second_squared_t(2 * std::numbers::pi);
 
@@ -107,6 +107,8 @@ namespace ModuleConstants {
     inline constexpr double kITurn = 0;
     inline constexpr double kDTurn = 0;
     inline constexpr double kFFTurn = 0;
+
+    inline constexpr auto kMaxModuleSpeed = 4.5_mps;
 
 }  // namespace ModuleConstants
 

@@ -33,5 +33,4 @@ class DefaultDrive
  private:
   DriveSubsystem* m_drive;
   frc2::CommandXboxController* m_controller;
-  double m_maxSpeed;
 };
