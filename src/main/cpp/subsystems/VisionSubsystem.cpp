@@ -13,37 +13,23 @@
 
 
 VisionSubsystem::VisionSubsystem() : 
-m_rightEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Right")), VisionConstants::RightTransform),
-m_leftEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Left")), VisionConstants::LeftTransform)
-{
-    m_leftEst.SetMultiTagFallbackStrategy(photonlib::PoseStrategy::LOWEST_AMBIGUITY);
-    m_rightEst.SetMultiTagFallbackStrategy(photonlib::PoseStrategy::LOWEST_AMBIGUITY);
-}
+    m_rightEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, 
+        std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Right")), VisionConstants::RightTransform),
+    m_leftEst(m_layout, photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR, 
+        std::move(photonlib::PhotonCamera("Arducam_OV9281_USB_Camera_Left")), VisionConstants::LeftTransform)
+    {
+        m_leftEst.SetMultiTagFallbackStrategy(photonlib::PoseStrategy::LOWEST_AMBIGUITY);
+        m_rightEst.SetMultiTagFallbackStrategy(photonlib::PoseStrategy::LOWEST_AMBIGUITY);
+    }
 
 // This method will be called once per scheduler run
-void VisionSubsystem::Periodic() {}
-
-VisionSubsystem& VisionSubsystem::GetInstance() {
-    static VisionSubsystem inst;
-    return inst;
-}
-
-photonlib::PhotonPipelineResult VisionSubsystem::GetLeftFrame() {
-    return m_leftEst.GetCamera()->GetLatestResult();
-}
-
-photonlib::PhotonPipelineResult VisionSubsystem::GetRightFrame() {
-    return m_rightEst.GetCamera()->GetLatestResult();
-}
-
-std::vector<PosePacket> VisionSubsystem::GetPose() {
-
+void VisionSubsystem::Periodic() {
+    
     std::vector<PosePacket> packets;
 
-
-    std::optional<PosePacket> packet = hb::LimeLight::GetPose();
-    if (packet.has_value()) {
-        packets.emplace_back(packet.value());
+    std::optional<PosePacket> llPose = hb::LimeLight::GetPose();
+    if (llPose.has_value()) {
+        packets.emplace_back(llPose.value());
     }
 
     
@@ -62,9 +48,26 @@ std::vector<PosePacket> VisionSubsystem::GetPose() {
         }
     }
 
-    return packets;
+    m_packets = packets;
+
 }
 
+VisionSubsystem& VisionSubsystem::GetInstance() {
+    static VisionSubsystem inst;
+    return inst;
+}
+
+photonlib::PhotonPipelineResult VisionSubsystem::GetLeftFrame() {
+    return m_leftEst.GetCamera()->GetLatestResult();
+}
+
+photonlib::PhotonPipelineResult VisionSubsystem::GetRightFrame() {
+    return m_rightEst.GetCamera()->GetLatestResult();
+}
+
+std::vector<PosePacket> VisionSubsystem::GetPose() {
+    return m_packets;
+}
 
 std::optional<PosePacket> VisionSubsystem::PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose) {
     if (!pose.has_value()) return std::nullopt;

@@ -58,4 +58,6 @@ class VisionSubsystem : public frc2::SubsystemBase {
   photonlib::PhotonPoseEstimator m_rightEst;
   photonlib::PhotonPoseEstimator m_leftEst;
 
+  std::vector<PosePacket> m_packets;
+
 };
