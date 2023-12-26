@@ -4,17 +4,12 @@
 
 #include "subsystems/VisionSubsystem.h"
 
-#include <units/length.h>
-#include <units/angle.h>
-
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/DriverStation.h>
 
 #include "Constants.h"
 #include "utils/cams/Limelight.h"
 #include "utils/cams/PosePacket.h"
-
 
 
 VisionSubsystem::VisionSubsystem() : 
@@ -46,30 +41,26 @@ std::vector<PosePacket> VisionSubsystem::GetPose() {
     std::vector<PosePacket> packets;
 
 
-    try {
-        std::optional<PosePacket> packet = hb::LimeLight::GetPose();
-        if (packet.has_value()) {
-            packets.emplace_back(packet.value());
-        }
-    } catch (...) {}
+    std::optional<PosePacket> packet = hb::LimeLight::GetPose();
+    if (packet.has_value()) {
+        packets.emplace_back(packet.value());
+    }
 
-    try {
-        std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
-        if (estl.has_value()) {
-            if (estl.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
-                packets.emplace_back(PhotonToPosePacket(estl).value());
-            }
-        }
-    } catch (...) {}
     
-    try {
-        std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
-        if (estr.has_value()) {
-            if (estr.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
-                packets.emplace_back(PhotonToPosePacket(estr).value());
-            }
+    std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
+    if (estl.has_value()) {
+        if (estl.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
+            packets.emplace_back(PhotonToPosePacket(estl).value());
         }
-    } catch (...) {}
+    }
+    
+    
+    std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
+    if (estr.has_value()) {
+        if (estr.value().strategy == photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
+            packets.emplace_back(PhotonToPosePacket(estr).value());
+        }
+    }
 
     return packets;
 }

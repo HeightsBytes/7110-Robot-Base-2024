@@ -85,6 +85,13 @@
     "cinttypes": "cpp",
     "typeinfo": "cpp",
     "valarray": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "*.inc": "cpp",
+    "bitset": "cpp",
+    "cfenv": "cpp",
+    "regex": "cpp",
+    "fstream": "cpp",
+    "future": "cpp",
+    "typeindex": "cpp"
   }
 }
