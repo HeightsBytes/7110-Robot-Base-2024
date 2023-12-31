@@ -1,8 +1,8 @@
 #pragma once
 
-#include <frc/interfaces/Gyro.h>
-
 #include <ctre/phoenix/sensors/PigeonIMU.h>
+
+#include <frc/geometry/Rotation2d.h>
 
 #include <units/angle.h>
 
@@ -11,7 +11,7 @@ namespace hb {
   /**
    * @brief Class for pigeon gyro inheriting the frc::Gyro class to ensure it interfaces withn the swerve drive
    */
-  class PigeonGyro : public frc::Gyro {
+  class PigeonGyro  {
   public:
 
     /**
@@ -26,25 +26,19 @@ namespace hb {
      * 
      * @return angle in degrees 
      */
-    double GetAngle() const override;
+    double GetAngle() const;
 
     /**
      * @brief Gets the rate of rotation in degrees per second
      * 
      * @return double rate of rotation 
      */
-    double GetRate() const override;
+    double GetRate() const;
 
     /**
      * @brief Resets the pigeon gyro heading
      */
-    void Reset() override;
-
-    /**
-     * @brief satisfies the pure virtual Calibrate() function found in
-     * frc::Gyro
-     */
-    void Calibrate() override;
+    void Reset();
 
     /**
      * @brief Get the pitch of the gyro

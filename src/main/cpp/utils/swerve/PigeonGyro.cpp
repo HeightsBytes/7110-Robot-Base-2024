@@ -48,8 +48,6 @@ double PigeonGyro::GetRoll() const {
   return pigeon->GetRoll();
 }
 
-void PigeonGyro::Calibrate() {} // Gyro::Calibrate() is pure virtual
-
 frc::Rotation2d PigeonGyro::GetRot2d() const {
   return frc::Rotation2d(units::degree_t(GetAngle()));
 }
