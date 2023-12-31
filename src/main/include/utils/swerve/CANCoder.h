@@ -11,9 +11,9 @@ namespace hb{
    * @brief CAN coder class for swerve modules
    * @warning ONLY FOR SWERVE MODULES
    */
-  class S_CANCoder : CANCoder{
+  class S_CANCoder : private CANCoder{
     public:
-      explicit S_CANCoder(const int& id, const double& offset);
+      explicit S_CANCoder(int id, double offset);
 
       /**
        * @brief gets the positon of the encoder from [-pi, pi]

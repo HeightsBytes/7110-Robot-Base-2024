@@ -2,7 +2,7 @@
 
 using namespace hb;
 
-S_CANCoder::S_CANCoder(const int& Id, const double& offset = 0) : CANCoder(Id), m_offset(offset), m_ID(Id) {
+S_CANCoder::S_CANCoder(int Id, double offset = 0) : CANCoder(Id), m_offset(offset), m_ID(Id) {
   printf("CANCoder: %i, reading %5.2f\n", Id, GetAbsolutePosition() - 180);
 }
 
