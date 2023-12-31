@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
@@ -13,23 +12,29 @@
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/smartdashboard/Field2d.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
+
 #include <frc2/command/SubsystemBase.h>
+
+#include <wpi/array.h>
+
+#include <units/angle.h>
+
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
-#include <units/angle.h>
-#include <wpi/array.h>
 
 #include "Constants.h"
 #include "frc/filter/SlewRateLimiter.h"
-#include "subsystems/VisionSubsystem.h"
 #include "units/velocity.h"
-#include "utils/swerve/PigeonGyro.h"
 #include "utils/swerve/SwerveModule.h"
+#include "utils/swerve/PigeonGyro.h"
+#include "subsystems/VisionSubsystem.h"
 
 class DriveSubsystem : public frc2::SubsystemBase {
  public:
+
   DriveSubsystem();
 
   void Periodic() override;
@@ -59,42 +64,40 @@ class DriveSubsystem : public frc2::SubsystemBase {
   frc::ChassisSpeeds GetVelocity() const;
 
   /**
-   * @returns array of the modules speeds and directions in the order [fl, fr,
-   * rl, rr]
-   */
+   * @returns array of the modules speeds and directions in the order [fl, fr, rl, rr]
+  */
   wpi::array<frc::SwerveModuleState, 4> GetModuleStates() const;
 
   /**
-   * @returns array of the modules displacements and directions in the order
-   * [fl, fr, rl, rr]
-   */
+   * @returns array of the modules displacements and directions in the order [fl, fr, rl, rr]
+  */  
   wpi::array<frc::SwerveModulePosition, 4> GetModulePositions() const;
 
   /**
    * @brief Returns the offseted heading
-   *
-   * @return frc::Rotation2d
+   * 
+   * @return frc::Rotation2d 
    */
   frc::Rotation2d GetHeading() const;
 
   /**
    * @brief Sets the offset of the gyro
-   *
-   * @param offset
+   * 
+   * @param offset 
    */
   void SetOffset(units::degree_t offset);
 
   /**
    * @brief Returns the roll of the robot
-   *
-   * @return double
+   * 
+   * @return double 
    */
   double GetRoll() const;
 
   /**
    * @brief Returns the pitch of the robot
-   *
-   * @return double
+   * 
+   * @return double 
    */
   double GetPitch() const;
 
@@ -132,4 +135,5 @@ class DriveSubsystem : public frc2::SubsystemBase {
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
 
   bool m_vision;
+
 };

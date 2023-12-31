@@ -7,13 +7,13 @@
 #include <frc/MathUtil.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-#include "Constants.h"
 #include "units/velocity.h"
 #include "utils/Util.h"
+#include "Constants.h"
 
-DefaultDrive::DefaultDrive(DriveSubsystem* drive,
-                           frc2::CommandXboxController* controller)
-    : m_drive(drive), m_controller(controller) {
+
+DefaultDrive::DefaultDrive(DriveSubsystem* drive, frc2::CommandXboxController* controller):
+  m_drive(drive), m_controller(controller) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drive);
 }
@@ -23,42 +23,40 @@ void DefaultDrive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void DefaultDrive::Execute() {
-  double maxSpeed = DriveConstants::kMaxChassisSpeed.value() *
+
+  double maxSpeed = DriveConstants::kMaxChassisSpeed.value() * 
                     (m_controller->GetRightTriggerAxis() * 0.625 + 0.375);
 
-  // Note: x is forwards, y is side to side.
+  // Note: x is forwards, y is side to side. 
   // This means 'x' is the traditional y direction
   // 'y' is the tradtional x
   double x = -m_controller->GetLeftY();
   double y = m_controller->GetLeftX();
-  double rotationMagnitude =
-      -frc::ApplyDeadband(m_controller->GetRightX(), 0.03);
+  double rotationMagnitude = -frc::ApplyDeadband(m_controller->GetRightX(), 0.03);
 
-  double magnitude =
-      std::pow(frc::ApplyDeadband(hb::hypot(x, y), 0.01), 2) * maxSpeed;
+  double magnitude = std::pow(frc::ApplyDeadband(hb::hypot(x, y), 0.01), 2) * maxSpeed;
 
-  // Determining the angle itself. If y==0 then we can simply multiply pi/2 by
-  // the sign of x
-  double angle = y == 0 ? hb::sgn(x) * std::numbers::pi / 2 : std::atan(x / y);
-  // Below we have to consider quadrants. Because arctan is limited to -pi/2 to
-  // pi/2 Check second quadrant
-  if (x > 0 && y < 0)
-    angle += std::numbers::pi;
+  // Determining the angle itself. If y==0 then we can simply multiply pi/2 by the sign of x
+  double angle = y == 0 ? hb::sgn(x)*std::numbers::pi/2 : std::atan(x/y);
+  // Below we have to consider quadrants. Because arctan is limited to -pi/2 to pi/2
+  // Check second quadrant
+  if (x > 0 && y < 0) angle += std::numbers::pi;
   // Check third quadrant
-  if (x < 0 && y < 0)
-    angle += std::numbers::pi;
+  if (x < 0 && y < 0) angle += std::numbers::pi;
   // Check edge case where x is zero and y is across zero
-  if (x == 0 && y < 0)
-    angle += std::numbers::pi;
+  if (x == 0 && y < 0) angle += std::numbers::pi;
 
-  units::meters_per_second_t xComponent =
-      units::meters_per_second_t(magnitude * std::sin(angle));
-  units::meters_per_second_t yComponent =
-      -units::meters_per_second_t(magnitude * std::cos(angle));
-  units::radians_per_second_t rotation = units::radians_per_second_t(
-      rotationMagnitude * DriveConstants::kMaxAngularSpeed.value());
+  units::meters_per_second_t xComponent = units::meters_per_second_t(magnitude * std::sin(angle));
+  units::meters_per_second_t yComponent = -units::meters_per_second_t(magnitude * std::cos(angle));
+  units::radians_per_second_t rotation = units::radians_per_second_t(rotationMagnitude * DriveConstants::kMaxAngularSpeed.value());
 
-  m_drive->Drive(xComponent, yComponent, rotation, true);
+  m_drive->Drive(
+    xComponent,
+    yComponent,
+    rotation,
+    true
+  );
+
 }
 
 // Called once the command ends or is interrupted.

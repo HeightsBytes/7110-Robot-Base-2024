@@ -4,13 +4,15 @@
 
 #pragma once
 
-#include <frc/TimedRobot.h>
+#include <optional>
+
 #include <frc2/command/Command.h>
 #include <frc2/command/Commands.h>
 
-#include <optional>
+#include <frc/TimedRobot.h>
 
 #include "RobotContainer.h"
+
 
 class Robot : public frc::TimedRobot {
  public:
@@ -25,8 +27,7 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
  private:
-  // Have it as 'none' by default to ensure nothing will happen if there is no
-  // auto
+  // Have it as 'none' by default to ensure nothing will happen if there is no auto
   std::optional<frc2::CommandPtr> m_autonomousCommand;
 
   RobotContainer m_container;
