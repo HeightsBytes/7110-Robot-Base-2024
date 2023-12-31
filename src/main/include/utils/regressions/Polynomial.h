@@ -16,7 +16,9 @@ template <int terms>
 class Polynomial : public RegressionBase {
  public:
   /** from least to greatest **/
-  Polynomial(wpi::array<double, terms> constants) { m_constants = constants; }
+  explicit Polynomial(wpi::array<double, terms> constants) {
+    m_constants = constants;
+  }
 
   double Calculate(double input) const override {
     double output = 0;

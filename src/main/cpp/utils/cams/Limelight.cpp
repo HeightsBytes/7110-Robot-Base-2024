@@ -27,12 +27,12 @@
 using namespace hb;
 
 bool LimeLight::HasTarget() {
-  return (bool)GETVAL("tv");
+  return static_cast<bool>(GETVAL("tv"));
 }
 
 double LimeLight::GetX() {
   return GETVAL("tx");
-};
+}
 
 double LimeLight::GetY() {
   return GETVAL("ty");

@@ -31,11 +31,6 @@
  * they are needed.
  */
 
-/*
- * inline const is used to specify type as it means there is only one global
- * allocation of each variable. Const ensures that it will not be mutable
- */
-
 namespace DriveConstants {
 
 namespace CanIds {

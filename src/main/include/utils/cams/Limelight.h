@@ -2,13 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-/**
- * @file Limelight.h
- * @author Nathan Correa
- * @brief
- * @date 2023-08-19
- */
-
 #pragma once
 
 #include <frc/geometry/Pose2d.h>
@@ -29,7 +22,7 @@ class LimeLight {
   /**
    * @brief Constructor is deleted as class will be static only
    */
-  explicit LimeLight() = delete;
+  LimeLight() = delete;
 
   /**
    * @brief Enum for all LED modes
