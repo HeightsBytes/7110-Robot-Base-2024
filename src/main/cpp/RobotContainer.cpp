@@ -7,6 +7,7 @@
 #include "RobotContainer.h"
 
 #include <frc2/command/Commands.h>
+#include <frc2/command/CommandScheduler.h>
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -32,6 +33,7 @@ RobotContainer::RobotContainer() {
 
   frc::SmartDashboard::PutData("PDP", &m_pdp);
   frc::SmartDashboard::PutData("Auto Chooser", &m_chooser);
+  frc::SmartDashboard::PutData("Command Scheduler", &frc2::CommandScheduler::GetInstance());
 
   // Configure the button bindings
   ConfigureDriverButtons();
