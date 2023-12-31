@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ctre/phoenix.h>
+#include <ctre/phoenix/sensors/CANCoder.h>
 
 #include <units/angle.h>
 
@@ -11,7 +11,7 @@ namespace hb{
    * @brief CAN coder class for swerve modules
    * @warning ONLY FOR SWERVE MODULES
    */
-  class S_CANCoder : private CANCoder{
+  class S_CANCoder : private ctre::phoenix::sensors::CANCoder{
     public:
       explicit S_CANCoder(int id, double offset);
 

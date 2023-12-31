@@ -1,6 +1,7 @@
 #include "utils/swerve/CANCoder.h"
 
 using namespace hb;
+using namespace ctre::phoenix::sensors;
 
 S_CANCoder::S_CANCoder(int Id, double offset = 0) : CANCoder(Id), m_offset(offset), m_ID(Id) {
   printf("CANCoder: %i, reading %5.2f\n", Id, GetAbsolutePosition() - 180);
