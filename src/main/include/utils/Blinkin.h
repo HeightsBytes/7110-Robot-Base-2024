@@ -1,33 +1,33 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
 #include <frc/motorcontrol/Spark.h>
-
 #include <stdint.h>
 
 namespace hb {
 
-    class Blinkin {
+class Blinkin {
+ public:
+  /**
+   * @brief Construct a new Blinkin object
+   *
+   * @param id pwm
+   */
+  explicit Blinkin(uint8_t id);
 
-        public: 
+  /**
+   * @brief Sets the pattern of the blinkin
+   *
+   * @param double [-1,1]
+   */
+  void Set(double set);
 
-            /**
-             * @brief Construct a new Blinkin object
-             * 
-             * @param id pwm
-             */
-            explicit Blinkin(uint8_t id);
+ private:
+  frc::Spark m_blinkin;
 
-            /**
-             * @brief Sets the pattern of the blinkin
-             * 
-             * @param double [-1,1]
-             */
-            void Set(double set);
+};  // class Blinkin
 
-        private:
-
-            frc::Spark m_blinkin;
-
-    }; // class Blinkin
-
-} // namespace hb
+}  // namespace hb

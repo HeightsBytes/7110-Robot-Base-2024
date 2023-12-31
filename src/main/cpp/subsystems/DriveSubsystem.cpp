@@ -4,16 +4,14 @@
 
 #include "subsystems/DriveSubsystem.h"
 
-#include <frc/geometry/Rotation2d.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/smartdashboard/Field2d.h>
 #include <frc/DriverStation.h>
 #include <frc/filter/MedianFilter.h>
-
+#include <frc/geometry/Rotation2d.h>
+#include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
-
 #include <wpi/sendable/SendableBuilder.h>
 
 #include "Constants.h"
@@ -24,43 +22,35 @@ using namespace DriveConstants::CanIds;
 using namespace pathplanner;
 
 DriveSubsystem::DriveSubsystem()
-    : 
-      m_frontLeft{
-          kFrontLeftDriveMotorPort,       kFrontLeftTurningMotorPort,
-          kFrontLeftTurningEncoderPorts,  kFrontLeftOffset},
+    : m_frontLeft{kFrontLeftDriveMotorPort, kFrontLeftTurningMotorPort,
+                  kFrontLeftTurningEncoderPorts, kFrontLeftOffset},
 
-      m_rearLeft{
-          kRearLeftDriveMotorPort,        kRearLeftTurningMotorPort,
-          kRearLeftTurningEncoderPorts,   kRearLeftOffset},
+      m_rearLeft{kRearLeftDriveMotorPort, kRearLeftTurningMotorPort,
+                 kRearLeftTurningEncoderPorts, kRearLeftOffset},
 
-      m_frontRight{
-          kFrontRightDriveMotorPort,      kFrontRightTurningMotorPort,
-          kFrontRightTurningEncoderPorts, kFrontRightOffset},
+      m_frontRight{kFrontRightDriveMotorPort, kFrontRightTurningMotorPort,
+                   kFrontRightTurningEncoderPorts, kFrontRightOffset},
 
-      m_rearRight{
-          kRearRightDriveMotorPort,       kRearRightTurningMotorPort,
-          kRearRightTurningEncoderPorts,  kRearRightOffset},
-        
-      m_gyro(DriveConstants::CanIds::kPidgeonID),  
-      m_visionSystem(VisionSubsystem::GetInstance()), 
-      m_poseEstimator(kDriveKinematics, GetHeading(), GetModulePositions(), frc::Pose2d()),
-                    m_vision(true)
-                     {
-                      frc::SmartDashboard::PutData("Field", &m_field);
-                      AutoBuilder::configureHolonomic(
-                        [this] {return GetPose();},
-                        [this](frc::Pose2d pose) {SetPose(pose);},
-                        [this] {return GetVelocity();},
-                        [this](frc::ChassisSpeeds speeds) {DriveRobotRelative(speeds);},
-                        AutoConstants::kConfig, 
-                        this
-                      );
-                    }
+      m_rearRight{kRearRightDriveMotorPort, kRearRightTurningMotorPort,
+                  kRearRightTurningEncoderPorts, kRearRightOffset},
+
+      m_gyro(DriveConstants::CanIds::kPidgeonID),
+      m_visionSystem(VisionSubsystem::GetInstance()),
+      m_poseEstimator(kDriveKinematics, GetHeading(), GetModulePositions(),
+                      frc::Pose2d()),
+      m_vision(true) {
+  frc::SmartDashboard::PutData("Field", &m_field);
+  AutoBuilder::configureHolonomic(
+      [this] { return GetPose(); }, [this](frc::Pose2d pose) { SetPose(pose); },
+      [this] { return GetVelocity(); },
+      [this](frc::ChassisSpeeds speeds) { DriveRobotRelative(speeds); },
+      AutoConstants::kConfig, this);
+}
 
 void DriveSubsystem::Periodic() {
   // Implementation of subsystem periodic method goes here.
   m_poseEstimator.Update(GetHeading(), GetModulePositions());
-  
+
   if (m_vision) {
     std::vector<PosePacket> CamPose = m_visionSystem.GetPose();
     for (PosePacket i : CamPose) {
@@ -69,37 +59,33 @@ void DriveSubsystem::Periodic() {
   }
 
   m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
-
 }
 
 void DriveSubsystem::Drive(units::meters_per_second_t xSpeed,
                            units::meters_per_second_t ySpeed,
                            units::radians_per_second_t rot,
                            bool fieldRelative) {
-  
   auto states = kDriveKinematics.ToSwerveModuleStates(
       fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
                           xSpeed, ySpeed, rot, GetHeading())
                     : frc::ChassisSpeeds{xSpeed, ySpeed, rot});
 
   SetModuleStates(states);
-
 }
 
 void DriveSubsystem::DriveRobotRelative(frc::ChassisSpeeds speeds) {
   Drive(speeds.vx, speeds.vy, speeds.omega, false);
 }
 
+void DriveSubsystem::SetModuleStates(
+    wpi::array<frc::SwerveModuleState, 4> desiredStates) {
+  kDriveKinematics.DesaturateWheelSpeeds(&desiredStates,
+                                         ModuleConstants::kMaxModuleSpeed);
 
-void DriveSubsystem::SetModuleStates(wpi::array<frc::SwerveModuleState, 4> desiredStates) {
-
-  kDriveKinematics.DesaturateWheelSpeeds(&desiredStates, ModuleConstants::kMaxModuleSpeed);
-  
   m_frontLeft.SetDesiredState(desiredStates[0]);
   m_frontRight.SetDesiredState(desiredStates[1]);
   m_rearLeft.SetDesiredState(desiredStates[2]);
   m_rearRight.SetDesiredState(desiredStates[3]);
-
 }
 
 frc::ChassisSpeeds DriveSubsystem::GetVelocity() const {
@@ -107,21 +93,14 @@ frc::ChassisSpeeds DriveSubsystem::GetVelocity() const {
 }
 
 wpi::array<frc::SwerveModuleState, 4> DriveSubsystem::GetModuleStates() const {
-  return {
-    m_frontLeft.GetState(),
-    m_frontRight.GetState(),
-    m_rearLeft.GetState(),
-    m_rearRight.GetState()
-  };
+  return {m_frontLeft.GetState(), m_frontRight.GetState(),
+          m_rearLeft.GetState(), m_rearRight.GetState()};
 }
 
-wpi::array<frc::SwerveModulePosition, 4> DriveSubsystem::GetModulePositions() const {
-  return {
-    m_frontLeft.GetPosition(),
-    m_frontRight.GetPosition(),
-    m_rearLeft.GetPosition(),
-    m_rearRight.GetPosition()
-  };
+wpi::array<frc::SwerveModulePosition, 4> DriveSubsystem::GetModulePositions()
+    const {
+  return {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+          m_rearLeft.GetPosition(), m_rearRight.GetPosition()};
 }
 
 frc::Rotation2d DriveSubsystem::GetHeading() const {
@@ -149,20 +128,23 @@ void DriveSubsystem::SetPose(frc::Pose2d pose) {
 }
 
 frc2::CommandPtr DriveSubsystem::SetGyro(units::degree_t angle) {
-  return this->RunOnce(
-    [angle, this] {SetOffset(angle);}
-  );
+  return this->RunOnce([angle, this] { SetOffset(angle); });
 }
 
 void DriveSubsystem::InitSendable(wpi::SendableBuilder& builder) {
-  
   builder.SetSmartDashboardType("Swerve Drive");
 
-  builder.AddBooleanProperty("Vision", LAMBDA(m_vision), [this](bool set) -> void {m_vision = set;});
+  builder.AddBooleanProperty("Vision", LAMBDA(m_vision),
+                             [this](bool set) -> void { m_vision = set; });
 
-  builder.AddDoubleProperty("X Velocity", LAMBDA(GetVelocity().vx.value()), nullptr);
-  builder.AddDoubleProperty("Y Velocity", LAMBDA(GetVelocity().vy.value()), nullptr);
-  builder.AddDoubleProperty("Rotation Velocity", LAMBDA(GetVelocity().omega.value()), nullptr);
-  builder.AddDoubleProperty("Velocity", LAMBDA(hb::hypot(GetVelocity().vx.value(), GetVelocity().vy.value())), nullptr);
-
+  builder.AddDoubleProperty("X Velocity", LAMBDA(GetVelocity().vx.value()),
+                            nullptr);
+  builder.AddDoubleProperty("Y Velocity", LAMBDA(GetVelocity().vy.value()),
+                            nullptr);
+  builder.AddDoubleProperty("Rotation Velocity",
+                            LAMBDA(GetVelocity().omega.value()), nullptr);
+  builder.AddDoubleProperty(
+      "Velocity",
+      LAMBDA(hb::hypot(GetVelocity().vx.value(), GetVelocity().vy.value())),
+      nullptr);
 }
