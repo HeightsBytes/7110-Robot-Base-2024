@@ -4,18 +4,16 @@
 
 #pragma once
 
-#include <optional>
-#include <vector>
-
-#include <frc2/command/SubsystemBase.h>
-
-#include <frc/geometry/Pose2d.h>
-#include <frc/apriltag/AprilTagFields.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFields.h>
+#include <frc/geometry/Pose2d.h>
 #include <frc/smartdashboard/Field2d.h>
-
+#include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonPoseEstimator.h>
+
+#include <optional>
+#include <vector>
 
 #include "utils/cams/PosePacket.h"
 
@@ -33,7 +31,6 @@
 \******************************************************************************/
 class VisionSubsystem : public frc2::SubsystemBase {
  public:
-
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -48,16 +45,16 @@ class VisionSubsystem : public frc2::SubsystemBase {
   std::vector<PosePacket> GetPose();
 
  private:
-
   VisionSubsystem();
 
-  std::optional<PosePacket> PhotonToPosePacket(std::optional<photonlib::EstimatedRobotPose> pose);
+  std::optional<PosePacket> PhotonToPosePacket(
+      std::optional<photonlib::EstimatedRobotPose> pose);
 
-  frc::AprilTagFieldLayout m_layout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp);
+  frc::AprilTagFieldLayout m_layout =
+      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp);
 
   photonlib::PhotonPoseEstimator m_rightEst;
   photonlib::PhotonPoseEstimator m_leftEst;
 
   std::vector<PosePacket> m_packets;
-
 };

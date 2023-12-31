@@ -17,8 +17,7 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class DefaultDrive
-    : public frc2::CommandHelper<frc2::Command, DefaultDrive> {
+class DefaultDrive : public frc2::CommandHelper<frc2::Command, DefaultDrive> {
  public:
   DefaultDrive(DriveSubsystem* drive, frc2::CommandXboxController* controller);
 
@@ -29,7 +28,7 @@ class DefaultDrive
   void End(bool interrupted) override;
 
   bool IsFinished() override;
- 
+
  private:
   DriveSubsystem* m_drive;
   frc2::CommandXboxController* m_controller;
