@@ -31,7 +31,6 @@
 \******************************************************************************/
 class VisionSubsystem : public frc2::SubsystemBase {
  public:
-
   void Periodic() override;
 
   static VisionSubsystem& GetInstance();

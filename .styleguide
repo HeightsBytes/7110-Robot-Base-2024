@@ -12,4 +12,11 @@ cppSrcFileInclude {
 modifiableFileExclude {
    gradle/
    src/main/deploy/
+   build/
+   vendordeps/
+   \.md$
+   \.bat$
+   \.gitignore$
+   \.pathplanner$
+   \.vscode$
 }
