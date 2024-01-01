@@ -150,5 +150,5 @@ void DriveSubsystem::InitSendable(wpi::SendableBuilder& builder) {
       LAMBDA(hb::hypot(GetVelocity().vx.value(), GetVelocity().vy.value())),
       nullptr);
 
-#undef LAMBDA(x)
+#undef LAMBDA
 }

@@ -7,13 +7,20 @@
 #include <frc/MathUtil.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include <utility>
+
 #include "Constants.h"
 #include "units/velocity.h"
 #include "utils/Util.h"
 
 DefaultDrive::DefaultDrive(DriveSubsystem* drive,
-                           frc2::CommandXboxController* controller)
-    : m_drive(drive), m_controller(controller) {
+                           std::function<double()> leftY,
+                           std::function<double()> leftX,
+                           std::function<double()> rightX,
+                           std::function<double()> triggerAxis)
+    : m_drive(drive),
+      m_leftY(std::move(leftY)), m_leftX(std::move(leftX)),
+      m_rightX(std::move(rightX)), m_triggerAxis(std::move(triggerAxis)){
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drive);
 }
@@ -24,15 +31,15 @@ void DefaultDrive::Initialize() {}
 // Called repeatedly when this Command is scheduled to run
 void DefaultDrive::Execute() {
   double maxSpeed = DriveConstants::kMaxChassisSpeed.value() *
-                    (m_controller->GetRightTriggerAxis() * 0.625 + 0.375);
+                    (m_triggerAxis() * 0.625 + 0.375);
 
   // Note: x is forwards, y is side to side.
   // This means 'x' is the traditional y direction
   // 'y' is the tradtional x
-  double x = -m_controller->GetLeftY();
-  double y = m_controller->GetLeftX();
+  double x = -m_leftX();
+  double y = m_leftY();
   double rotationMagnitude =
-      -frc::ApplyDeadband(m_controller->GetRightX(), 0.03);
+      -frc::ApplyDeadband(m_rightX(), 0.03);
 
   double magnitude =
       std::pow(frc::ApplyDeadband(hb::hypot(x, y), 0.01), 2) * maxSpeed;
