@@ -132,6 +132,8 @@ frc2::CommandPtr DriveSubsystem::SetGyro(units::degree_t angle) {
 }
 
 void DriveSubsystem::InitSendable(wpi::SendableBuilder& builder) {
+#define LAMBDA(x) [this] { return x; }
+
   builder.SetSmartDashboardType("Swerve Drive");
 
   builder.AddBooleanProperty("Vision", LAMBDA(m_vision),
@@ -147,4 +149,6 @@ void DriveSubsystem::InitSendable(wpi::SendableBuilder& builder) {
       "Velocity",
       LAMBDA(hb::hypot(GetVelocity().vx.value(), GetVelocity().vy.value())),
       nullptr);
+
+#undef LAMBDA(x)
 }

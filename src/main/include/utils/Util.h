@@ -8,8 +8,6 @@
 
 #include <cmath>
 
-#define LAMBDA(x) [this] { return x; }
-
 namespace hb {
 
 inline int sgn(double x) {
