@@ -83,7 +83,6 @@ units::degree_t PigeonGyro::GetCompassHeading() const {
   }
 
   return units::degree_t(std::lround(angle) % 360);
-
 }
 
 void PigeonGyro::Set(units::degree_t heading) {

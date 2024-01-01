@@ -23,7 +23,7 @@ class PigeonGyro {
   units::degree_t GetPitch() const;
 
   units::degree_t GetRoll() const;
-  
+
   frc::Rotation2d GetRot2d() const;
 
   units::radian_t GetRad() const;
