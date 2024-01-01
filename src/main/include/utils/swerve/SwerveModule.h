@@ -22,49 +22,19 @@
 #include "utils/swerve/CANCoder.h"
 
 class SwerveModule {
-  using radians_per_second_squared_t =
-      units::compound_unit<units::radians,
-                           units::inverse<units::squared<units::second>>>;
-
  public:
   SwerveModule(int driveMotorChannel, int turningMotorChannel,
                const int turningEncoderPorts, const double offset);
-
-  /**
-   * Both the velocity of the swerve module and the angle of it
-   * @returns frc::SwerveModuleState
-   */
   frc::SwerveModuleState GetState() const;
 
-  /**
-   * Both the angle of the swerve module and the total distance of the drive
-   * motor
-   * @returns frc::SwerveModulePosition
-   */
   frc::SwerveModulePosition GetPosition() const;
 
-  /**
-   * @param frc::SwerveModuleState the target state
-   *
-   */
   void SetDesiredState(const frc::SwerveModuleState& state);
 
-  /**
-   * Resets the drive and turn encoder
-   * Turn encoder is zeroed with CANCoder
-   * @warning also zeros drive position encoder which may throw off pose
-   * estimation
-   */
   void ResetEncoders();
 
-  /**
-   * Zeros the turn encoder with the CANCoder
-   */
   void ZeroTurnEncoder();
 
-  /**
-   * Stops all outputs to the motors
-   */
   void StopMotors();
 
  private:

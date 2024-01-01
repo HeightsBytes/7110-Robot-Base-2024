@@ -20,22 +20,22 @@ PigeonGyro::PigeonGyro(int ID) {
   m_offset = 0;
 }
 
-double PigeonGyro::GetAngle() const {
+units::degree_t PigeonGyro::GetAngle() const {
   if (pigeon->GetState() == PigeonIMU::Ready) {
     PigeonIMU::FusionStatus stat;
     pigeon->GetFusedHeading(stat);
     m_angle = stat.heading;
   }
-  return m_angle + m_offset;
+  return units::degree_t(m_angle + m_offset);
 }
 
-double PigeonGyro::GetRate() const {
+units::degrees_per_second_t PigeonGyro::GetRate() const {
   if (pigeon->GetState() == PigeonIMU::Ready) {
     double rate[3];
     pigeon->GetRawGyro(rate);
     m_rate = rate[2];
   }
-  return m_rate;
+  return units::degrees_per_second_t(m_rate);
 }
 
 void PigeonGyro::Reset() {
@@ -43,33 +43,33 @@ void PigeonGyro::Reset() {
   m_angle = m_rate = 0;
 }
 
-double PigeonGyro::GetPitch() const {
-  return pigeon->GetPitch();
+units::degree_t PigeonGyro::GetPitch() const {
+  return units::degree_t(pigeon->GetPitch());
 }
 
-double PigeonGyro::GetRoll() const {
-  return pigeon->GetRoll();
+units::degree_t PigeonGyro::GetRoll() const {
+  return units::degree_t(pigeon->GetRoll());
 }
 
 frc::Rotation2d PigeonGyro::GetRot2d() const {
-  return frc::Rotation2d(units::degree_t(GetAngle()));
+  return frc::Rotation2d(GetAngle());
 }
 
 units::radian_t PigeonGyro::GetRad() const {
-  return units::radian_t((std::numbers::pi * GetAngle()) / 180);
+  return units::radian_t((std::numbers::pi * GetAngle().value()) / 180);
 }
 
 void PigeonGyro::SetPosition(units::degree_t angle) {
   m_offset = angle.value();
 }
 
-double PigeonGyro::GetCompassHeading() const {
-  double angle = GetAngle();
+units::degree_t PigeonGyro::GetCompassHeading() const {
+  double angle = GetAngle().value();
   int initSign = hb::sgn(angle);
 
   // Check if the angle is already in range
   if (std::fabs(angle) < 180)
-    return angle;
+    return units::degree_t(angle);
 
   // add or subtract until the angle switches sign
   // for loop is used because while loop is not allowed
@@ -82,11 +82,8 @@ double PigeonGyro::GetCompassHeading() const {
     }
   }
 
-  // std::printf("Angle: %5.2f\n", angle);
+  return units::degree_t(std::lround(angle) % 360);
 
-  return std::lround(angle) % 360;
-
-  // return angle;
 }
 
 void PigeonGyro::Set(units::degree_t heading) {

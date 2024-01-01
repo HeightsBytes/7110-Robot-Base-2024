@@ -111,11 +111,11 @@ void DriveSubsystem::SetOffset(units::degree_t offset) {
   m_offset = offset;
 }
 
-double DriveSubsystem::GetRoll() const {
+units::degree_t DriveSubsystem::GetRoll() const {
   return m_gyro.GetRoll();
 }
 
-double DriveSubsystem::GetPitch() const {
+units::degree_t DriveSubsystem::GetPitch() const {
   return m_gyro.GetPitch();
 }
 

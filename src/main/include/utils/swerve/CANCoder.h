@@ -21,10 +21,8 @@ class S_CANCoder : private ctre::phoenix::sensors::CANCoder {
   /**
    * @brief gets the positon of the encoder from [-pi, pi]
    * and applies the offset
-   *
-   * @return double
    */
-  double Get();
+  units::radian_t Get();
 
  private:
   double m_offset;

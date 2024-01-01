@@ -7,80 +7,30 @@
 #include <ctre/phoenix/sensors/PigeonIMU.h>
 #include <frc/geometry/Rotation2d.h>
 #include <units/angle.h>
+#include <units/angular_velocity.h>
 
 namespace hb {
-
-/**
- * @brief Class for pigeon gyro inheriting the frc::Gyro class to ensure it
- * interfaces withn the swerve drive
- */
 class PigeonGyro {
  public:
-  /**
-   * @brief Creates a new pigeon gyro object using CAN
-   *
-   * @param ID the CAN ID
-   */
   explicit PigeonGyro(int ID);
 
-  /**
-   * @brief Gets the angle the pigeon gyro is reading
-   *
-   * @return angle in degrees
-   */
-  double GetAngle() const;
+  units::degree_t GetAngle() const;
 
-  /**
-   * @brief Gets the rate of rotation in degrees per second
-   *
-   * @return double rate of rotation
-   */
-  double GetRate() const;
+  units::degrees_per_second_t GetRate() const;
 
-  /**
-   * @brief Resets the pigeon gyro heading
-   */
   void Reset();
 
-  /**
-   * @brief Get the pitch of the gyro
-   *
-   * @return double
-   */
-  virtual double GetPitch() const;
+  units::degree_t GetPitch() const;
 
-  /**
-   * @brief Get the roll of the gyro
-   *
-   * @return double
-   */
-  virtual double GetRoll() const;
+  units::degree_t GetRoll() const;
+  
+  frc::Rotation2d GetRot2d() const;
 
-  /**
-   * Working version of GetRotation2d
-   */
-  virtual frc::Rotation2d GetRot2d() const;
+  units::radian_t GetRad() const;
 
-  /**
-   * @brief Get the rotation of the gyro in radians
-   *
-   * @return units::radian_t
-   */
-  virtual units::radian_t GetRad() const;
+  void SetPosition(units::degree_t);
 
-  /**
-   * @brief Set the angle of the gyro
-   *
-   * @param units::degree_t
-   */
-  virtual void SetPosition(units::degree_t);
-
-  /**
-   * @brief Get the compass heading of the gyro from [-180, 180]
-   *
-   * @return double
-   */
-  double GetCompassHeading() const;
+  units::degree_t GetCompassHeading() const;
 
   void Set(units::degree_t heading);
 

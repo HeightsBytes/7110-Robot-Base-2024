@@ -35,7 +35,7 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
   // set the turn conversion factors
   m_sparkTurnEncoder.SetPositionConversionFactor(
       ModuleConstants::kTurnEncoderRatio);
-  m_sparkTurnEncoder.SetPosition(m_turningEncoder.Get());
+  m_sparkTurnEncoder.SetPosition(m_turningEncoder.Get().value());
 
   // set the drive conversion factor
   m_sparkDriveEncoder.SetVelocityConversionFactor(
@@ -94,12 +94,12 @@ void SwerveModule::SetDesiredState(
 
 void SwerveModule::ResetEncoders() {
   m_sparkDriveEncoder.SetPosition(0);
-  m_sparkTurnEncoder.SetPosition(m_turningEncoder.Get());
+  m_sparkTurnEncoder.SetPosition(m_turningEncoder.Get().value());
 }
 
 void SwerveModule::ZeroTurnEncoder() {
   // This is useful if you don't want to change the drive encoder reading
-  m_sparkTurnEncoder.SetPosition(m_turningEncoder.Get());
+  m_sparkTurnEncoder.SetPosition(m_turningEncoder.Get().value());
 }
 
 void SwerveModule::StopMotors() {

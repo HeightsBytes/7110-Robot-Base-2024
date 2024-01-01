@@ -12,7 +12,7 @@ S_CANCoder::S_CANCoder(int Id, double offset = 0)
   std::printf("CANCoder: %i, reading %5.2f\n", Id, GetAbsolutePosition() - 180);
 }
 
-double S_CANCoder::Get() {
+units::radian_t S_CANCoder::Get() {
   double rv = GetAbsolutePosition() - m_offset;
 
   if (rv < 0.0)
@@ -23,5 +23,5 @@ double S_CANCoder::Get() {
 
   double a = (std::numbers::pi * 2 * (rv / 360.0)) - (std::numbers::pi);
 
-  return a;
+  return units::radian_t(a);
 }

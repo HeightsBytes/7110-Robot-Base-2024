@@ -89,14 +89,14 @@ class DriveSubsystem : public frc2::SubsystemBase {
    *
    * @return double
    */
-  double GetRoll() const;
+  units::degree_t GetRoll() const;
 
   /**
    * @brief Returns the pitch of the robot
    *
    * @return double
    */
-  double GetPitch() const;
+  units::degree_t GetPitch() const;
 
   /**
    * Returns the currently-estimated pose of the robot.
