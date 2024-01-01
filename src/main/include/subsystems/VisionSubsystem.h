@@ -31,16 +31,10 @@
 \******************************************************************************/
 class VisionSubsystem : public frc2::SubsystemBase {
  public:
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
+
   void Periodic() override;
 
   static VisionSubsystem& GetInstance();
-
-  photonlib::PhotonPipelineResult GetLeftFrame();
-
-  photonlib::PhotonPipelineResult GetRightFrame();
 
   std::vector<PosePacket> GetPose();
 

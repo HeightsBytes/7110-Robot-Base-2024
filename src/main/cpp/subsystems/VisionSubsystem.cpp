@@ -31,21 +31,21 @@ void VisionSubsystem::Periodic() {
   std::vector<PosePacket> packets;
 
   std::optional<PosePacket> llPose = hb::LimeLight::GetPose();
-  if (llPose.has_value()) {
+  if (llPose) {
     packets.emplace_back(llPose.value());
   }
 
   std::optional<photonlib::EstimatedRobotPose> estl = m_leftEst.Update();
-  if (estl.has_value()) {
-    if (estl.value().strategy ==
+  if (estl) {
+    if (estl->strategy ==
         photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
       packets.emplace_back(PhotonToPosePacket(estl).value());
     }
   }
 
   std::optional<photonlib::EstimatedRobotPose> estr = m_rightEst.Update();
-  if (estr.has_value()) {
-    if (estr.value().strategy ==
+  if (estr) {
+    if (estr->strategy ==
         photonlib::PoseStrategy::MULTI_TAG_PNP_ON_COPROCESSOR) {
       packets.emplace_back(PhotonToPosePacket(estr).value());
     }
@@ -57,14 +57,6 @@ void VisionSubsystem::Periodic() {
 VisionSubsystem& VisionSubsystem::GetInstance() {
   static VisionSubsystem inst;
   return inst;
-}
-
-photonlib::PhotonPipelineResult VisionSubsystem::GetLeftFrame() {
-  return m_leftEst.GetCamera()->GetLatestResult();
-}
-
-photonlib::PhotonPipelineResult VisionSubsystem::GetRightFrame() {
-  return m_rightEst.GetCamera()->GetLatestResult();
 }
 
 std::vector<PosePacket> VisionSubsystem::GetPose() {
