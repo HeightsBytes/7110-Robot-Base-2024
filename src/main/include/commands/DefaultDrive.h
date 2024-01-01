@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include <functional>
-
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/button/CommandXboxController.h>
+
+#include <functional>
 
 #include "subsystems/DriveSubsystem.h"
 
@@ -21,8 +21,9 @@
  */
 class DefaultDrive : public frc2::CommandHelper<frc2::Command, DefaultDrive> {
  public:
-  DefaultDrive(DriveSubsystem* drive, std::function<double()> leftY, 
-        std::function<double()> leftX, std::function<double()> rightX, std::function<double()> triggerAxis);
+  DefaultDrive(DriveSubsystem* drive, std::function<double()> leftY,
+               std::function<double()> leftX, std::function<double()> rightX,
+               std::function<double()> triggerAxis);
 
   void Initialize() override;
 

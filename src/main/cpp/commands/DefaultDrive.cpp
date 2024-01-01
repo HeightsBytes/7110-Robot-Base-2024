@@ -13,14 +13,15 @@
 #include "units/velocity.h"
 #include "utils/Util.h"
 
-DefaultDrive::DefaultDrive(DriveSubsystem* drive,
-                           std::function<double()> leftY,
+DefaultDrive::DefaultDrive(DriveSubsystem* drive, std::function<double()> leftY,
                            std::function<double()> leftX,
                            std::function<double()> rightX,
                            std::function<double()> triggerAxis)
     : m_drive(drive),
-      m_leftY(std::move(leftY)), m_leftX(std::move(leftX)),
-      m_rightX(std::move(rightX)), m_triggerAxis(std::move(triggerAxis)){
+      m_leftY(std::move(leftY)),
+      m_leftX(std::move(leftX)),
+      m_rightX(std::move(rightX)),
+      m_triggerAxis(std::move(triggerAxis)) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drive);
 }
@@ -38,8 +39,7 @@ void DefaultDrive::Execute() {
   // 'y' is the tradtional x
   double x = -m_leftX();
   double y = m_leftY();
-  double rotationMagnitude =
-      -frc::ApplyDeadband(m_rightX(), 0.03);
+  double rotationMagnitude = -frc::ApplyDeadband(m_rightX(), 0.03);
 
   double magnitude =
       std::pow(frc::ApplyDeadband(hb::hypot(x, y), 0.01), 2) * maxSpeed;
